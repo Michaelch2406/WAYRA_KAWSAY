@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700&display=swap');
+
+:root {
+    --color-principal: #B74D3F; /* Rojo ocre */
+    --color-acento: #3E6E8C; /* Azul */
+    --color-fondo: #F5F5F5; /* Blanco roto */
+    --color-texto: #333333;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--color-principal);
+}
+
+.navbar {
+    background-color: #FFFFFF !important;
+    border-bottom: 3px solid var(--color-principal);
+}
+
+.navbar-brand {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--color-principal) !important;
+    font-weight: bold;
+}
+
+.nav-link {
+    color: var(--color-texto) !important;
+}
+
+.nav-link.active {
+    color: var(--color-principal) !important;
+    font-weight: bold;
+}
+
+a {
+    color: var(--color-acento);
+}
+
+a:hover {
+    color: var(--color-principal);
+}
+
+.footer {
+    background-color: #FFFFFF !important;
+    border-top: 3px solid var(--color-principal);
+}

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $texto['menu_cultura']; ?> - <?php echo NOMBRE_PROYECTO; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -104,7 +104,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script async src="https://www.tiktok.com/embed.js"></script>
-    <script src="js/script.js"></script>
+    <script src="../js/script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const unsplashApiKey = 'TU_API_KEY_UNSPLASH'; // REEMPLAZA ESTO CON TU API KEY DE UNSPLASH

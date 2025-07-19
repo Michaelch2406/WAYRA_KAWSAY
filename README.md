@@ -125,14 +125,14 @@ wayra_kawsay_app/
    - `#comunidad` - Información
 
 #### Personalizar Estilos
-1. Modifica `css/styles.css` para cambiar colores, fuentes y diseño
+1. Modifica `../css/styles.css` para cambiar colores, fuentes y diseño
 2. Variables CSS principales:
    - Color primario: `#2c5530`
    - Color secundario: `#4a7c59`
    - Fuente principal: `'Poppins', sans-serif`
 
 #### Agregar Funcionalidades
-1. Edita `js/script.js` para nuevas características
+1. Edita `../js/script.js` para nuevas características
 2. Las funciones principales están documentadas en el código
 
 ### Integración de Contenido Real

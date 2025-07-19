@@ -1,0 +1,808 @@
+/* Estilos específicos para la página de Kichwa - Adaptado del patrón de sabores */
+
+:root {
+    --color-primary: #8B4513;
+    --color-secondary: #D2691E;
+    --color-accent: #CD853F;
+    --color-text: #2C1810;
+    --color-light: #F5F5DC;
+    --color-white: #FFFFFF;
+    --color-overlay: rgba(0, 0, 0, 0.6);
+    --color-food-warm: #FF6B35;
+    --color-food-spice: #F7931E;
+    --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.15);
+    --shadow-strong: 0 8px 30px rgba(0, 0, 0, 0.25);
+    --transition: all 0.3s ease;
+    --border-radius: 15px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-light);
+}
+
+/* Navegación heredada del patrón de sabores */
+.navbar {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)) !important;
+    box-shadow: var(--shadow-medium);
+    padding: 1rem 0;
+    transition: var(--transition);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: var(--color-white) !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-nav .nav-link {
+    color: var(--color-white) !important;
+    font-weight: 500;
+    margin: 0 0.5rem;
+    padding: 0.5rem 1rem !important;
+    border-radius: 25px;
+    transition: var(--transition);
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#language-selector {
+    background-color: var(--color-white);
+    border: 2px solid var(--color-accent);
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+/* Hero section específico para kichwa */
+.kichwa-hero {
+    position: relative;
+    min-height: 60vh;
+    background: linear-gradient(var(--color-overlay), var(--color-overlay)), url('../images/kichwa_culture_1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 76px; /* Compensar navbar fija */
+}
+
+.hero-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 3rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-strong);
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+    backdrop-filter: blur(10px);
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-title {
+    color: var(--color-primary);
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hero-subtitle {
+    color: var(--color-text);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+}
+
+/* Sección de filtros */
+.filters-section {
+    background: var(--color-white);
+    padding: 2rem 0;
+    box-shadow: var(--shadow-light);
+    position: sticky;
+    top: 76px;
+    z-index: 100;
+}
+
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filter-btn {
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: var(--transition);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: var(--color-primary);
+    color: var(--color-white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.filter-btn:hover::before {
+    left: 100%;
+}
+
+/* Contenido principal de Kichwa */
+.kichwa-content {
+    padding: 4rem 0;
+}
+
+.search-container {
+    background: var(--color-white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.search-container .form-control {
+    border: 2px solid var(--color-accent);
+    border-radius: 25px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.search-container .form-control:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.25rem rgba(139, 69, 19, 0.25);
+}
+
+.btn-kichwa {
+    background: linear-gradient(45deg, var(--color-primary), var(--color-food-spice));
+    border: none;
+    color: var(--color-white);
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: var(--transition);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.btn-kichwa:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+    color: var(--color-white);
+}
+
+/* Tarjetas de información mejoradas */
+.info-card {
+    background: var(--color-white);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+    box-shadow: var(--shadow-light);
+    transition: var(--transition);
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+}
+
+.info-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: var(--shadow-strong);
+}
+
+.info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, var(--color-food-warm), var(--color-food-spice));
+    opacity: 0;
+    transition: var(--transition);
+    z-index: 1;
+    border-radius: var(--border-radius);
+}
+
+.info-card:hover::before {
+    opacity: 0.1;
+}
+
+.info-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--color-food-warm), var(--color-food-spice));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: var(--color-white);
+    position: relative;
+    z-index: 2;
+}
+
+.info-title {
+    color: var(--color-primary);
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+    transition: var(--transition);
+}
+
+.info-card:hover .info-title {
+    color: var(--color-food-warm);
+}
+
+.info-description {
+    color: var(--color-text);
+    line-height: 1.7;
+    position: relative;
+    z-index: 2;
+}
+
+/* Diccionario Kichwa - Tabla mejorada */
+.kichwa-dictionary {
+    background: var(--color-white);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-light);
+    margin: 2rem 0;
+}
+
+.kichwa-table {
+    background: var(--color-white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    margin: 0;
+}
+
+.kichwa-table thead {
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+}
+
+.kichwa-table thead th {
+    color: var(--color-white);
+    font-weight: bold;
+    padding: 1.2rem;
+    text-align: center;
+    border: none;
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.kichwa-table tbody tr {
+    transition: var(--transition);
+    border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+    cursor: pointer;
+}
+
+.kichwa-table tbody tr:hover {
+    background-color: rgba(205, 133, 63, 0.1);
+    transform: scale(1.02);
+}
+
+.kichwa-table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border: none;
+}
+
+.kichwa-word {
+    font-weight: bold;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+}
+
+.spanish-translation {
+    color: var(--color-text);
+    font-style: italic;
+}
+
+/* Controles de audio mejorados */
+.audio-cell {
+    text-align: center;
+}
+
+audio {
+    width: 100%;
+    max-width: 200px;
+    height: 40px;
+    border-radius: 20px;
+    outline: none;
+}
+
+audio::-webkit-media-controls-panel {
+    background-color: var(--color-accent);
+    border-radius: 20px;
+}
+
+.playing {
+    background-color: rgba(255, 107, 53, 0.1);
+    border-radius: var(--border-radius);
+    padding: 0.5rem;
+}
+
+/* Sección cultural mejorada */
+.cultural-section {
+    background: linear-gradient(135deg, var(--color-light), var(--color-white));
+    padding: 5rem 0;
+}
+
+.cultural-card {
+    background: var(--color-white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    transition: var(--transition);
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+}
+
+.cultural-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: var(--shadow-strong);
+}
+
+.cultural-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, var(--color-food-warm), var(--color-food-spice));
+    opacity: 0;
+    transition: var(--transition);
+    z-index: 1;
+}
+
+.cultural-card:hover::before {
+    opacity: 0.1;
+}
+
+.card-image-container {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.cultural-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.cultural-card:hover img {
+    transform: scale(1.1);
+}
+
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-overlay);
+    opacity: 0;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cultural-card:hover .card-overlay {
+    opacity: 1;
+}
+
+.overlay-content {
+    color: var(--color-white);
+    text-align: center;
+    transform: translateY(20px);
+    transition: var(--transition);
+}
+
+.cultural-card:hover .overlay-content {
+    transform: translateY(0);
+}
+
+.card-body {
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.card-title {
+    color: var(--color-primary);
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+.cultural-card:hover .card-title {
+    color: var(--color-food-warm);
+}
+
+.card-description {
+    color: var(--color-text);
+    line-height: 1.7;
+}
+
+/* Sección de información adicional */
+.info-section {
+    background: linear-gradient(135deg, var(--color-light), var(--color-white));
+    padding: 5rem 0;
+}
+
+.section-title {
+    text-align: center;
+    color: var(--color-primary);
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 3rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer heredado del patrón de sabores */
+.footer {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: var(--color-white);
+    padding: 3rem 0 1rem;
+    margin-top: 3rem;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-section h5 {
+    color: var(--color-white);
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.footer-section p,
+.footer-section a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.footer-section a:hover {
+    color: var(--color-white);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 1rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.social-links a {
+    color: var(--color-white);
+    font-size: 1.5rem;
+    transition: var(--transition);
+}
+
+.social-links a:hover {
+    color: var(--color-accent);
+    transform: translateY(-3px);
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fade-in {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.slide-in-left {
+    animation: slideInLeft 0.8s ease-out;
+}
+
+.slide-in-right {
+    animation: slideInRight 0.8s ease-out;
+}
+
+/* Loading skeleton */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .hero-content {
+        padding: 2rem;
+        margin: 1rem;
+    }
+    
+    .filter-buttons {
+        justify-content: center;
+    }
+    
+    .filter-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .cultural-card {
+        margin-bottom: 2rem;
+    }
+    
+    .card-image-container {
+        height: 200px;
+    }
+    
+    .kichwa-table {
+        font-size: 0.9rem;
+    }
+    
+    .kichwa-table thead th,
+    .kichwa-table tbody td {
+        padding: 0.8rem 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .kichwa-hero {
+        min-height: 50vh;
+    }
+    
+    .kichwa-dictionary {
+        padding: 1rem;
+    }
+    
+    .kichwa-table {
+        font-size: 0.8rem;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .info-section {
+        padding: 3rem 0;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+}
+
+/* Efectos especiales */
+.sparkle {
+    position: relative;
+    overflow: hidden;
+}
+
+.sparkle::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: sparkle 3s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes sparkle {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(0deg);
+    }
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(360deg);
+    }
+}
+
+/* Botón de scroll to top */
+.scroll-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: var(--color-white);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* Estados especiales para elementos de audio */
+.loading-audio {
+    opacity: 0.6;
+    position: relative;
+}
+
+.loading-audio::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--color-accent);
+    border-top: 2px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.audio-error {
+    color: var(--color-text);
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* Mejoras para la búsqueda */
+.search-highlight {
+    background-color: rgba(255, 107, 53, 0.3);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* Transiciones suaves para filtros */
+.kichwa-row {
+    transition: var(--transition);
+}
+
+.kichwa-row.hidden {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+}
+
+/* Indicadores de estado */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.status-indicator.available {
+    background-color: #28a745;
+}
+
+.status-indicator.unavailable {
+    background-color: #dc3545;
+}
+
+.status-indicator.loading {
+    background-color: #ffc107;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+

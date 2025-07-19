@@ -92,17 +92,73 @@ $sabores_ejemplo = [
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/sabores.css">
-    <link rel="stylesheet" href="VISTAS/partials/css/navbar.css">
-    <link rel="stylesheet" href="VISTAS/partials/css/footer.css">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body>
     <!-- Navegación -->
-    <header id="navbar-placeholder">
-        <?php include 'VISTAS/partials/navbar.php'; ?>
-    </header>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.php">
+                <i class="fas fa-mountain"></i>
+                <?php echo NOMBRE_PROYECTO; ?>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php">
+                            <i class="fas fa-home"></i>
+                            <?php echo $texto['menu_inicio']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="sabores.php">
+                            <i class="fas fa-utensils"></i>
+                            <?php echo $texto['menu_sabores']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="artesanias.php">
+                            <i class="fas fa-palette"></i>
+                            <?php echo $texto['menu_artesanias']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="kichwa.php">
+                            <i class="fas fa-language"></i>
+                            <?php echo $texto['menu_kichwa']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cultura.php">
+                            <i class="fas fa-users"></i>
+                            <?php echo $texto['menu_cultura']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="ubicacion.php">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <?php echo $texto['menu_ubicacion']; ?>
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <select class="form-select" id="language-selector">
+                        <option value="es" <?php if($lang_code == 'es') echo 'selected'; ?>>
+                            🇪🇸 Español
+                        </option>
+                        <option value="qu" <?php if($lang_code == 'qu') echo 'selected'; ?>>
+                            🏔️ Kichwa
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </nav>
 
     <!-- Hero Section -->
     <section class="sabores-hero">
@@ -310,15 +366,52 @@ $sabores_ejemplo = [
     </section>
 
     <!-- Footer -->
-    <footer id="footer-placeholder">
-        <?php include 'VISTAS/partials/footer.php'; ?>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h5><i class="fas fa-mountain"></i> <?php echo NOMBRE_PROYECTO; ?></h5>
+                    <p>Preservando y compartiendo la riqueza gastronómica de los Andes para las futuras generaciones.</p>
+                    <div class="social-links">
+                        <a href="#" class="me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h5>Navegación</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.php">Inicio</a></li>
+                        <li><a href="sabores.php">Sabores</a></li>
+                        <li><a href="artesanias.php">Artesanías</a></li>
+                        <li><a href="kichwa.php">Kichwa</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Gastronomía</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Recetas Tradicionales</a></li>
+                        <li><a href="#">Ingredientes Nativos</a></li>
+                        <li><a href="#">Técnicas Ancestrales</a></li>
+                        <li><a href="#">Festivales Gastronómicos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Contacto</h5>
+                    <p><i class="fas fa-envelope"></i> sabores@culturaandina.com</p>
+                    <p><i class="fas fa-phone"></i> +593 (0)2 123-4567</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Quito, Ecuador</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 <?php echo NOMBRE_PROYECTO; ?>. <?php echo $texto['pie_pagina']; ?></p>
+            </div>
+        </div>
     </footer>
-    <!-- Scripts -->
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="js/sabores.js"></script>
-    <script src="VISTAS/partials/js/navbar.js"></script>
-    <script src="VISTAS/partials/js/footer.js"></script>
 </body>
 </html>
 

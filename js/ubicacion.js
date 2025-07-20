@@ -1,239 +1,247 @@
-/**
- * Ubicacion.js - Funcionalidades interactivas para la página de ubicación de Imbabura, Ecuador
- */
+// JavaScript para funcionalidades específicas de la página de ubicación - Siguiendo el patrón de sabores
 
-// Configuración global
-const UbicacionApp = {
-    // Coordenadas de Naranjito, Imbabura
-    coordinates: {
-        naranjito: {
-            lat: 0.3283,
-            lng: -78.1456,
-            name: 'Naranjito, Caranqui'
-        },
-        ibarra: {
-            lat: 0.3516,
-            lng: -78.1224,
-            name: 'Ibarra, Ciudad Blanca'
-        },
-        imbabura: {
-            lat: 0.2622,
-            lng: -78.1756,
-            name: 'Volcán Imbabura'
-        }
-    },
-
-    // Puntos de interés con información detallada
-    pointsOfInterest: [
-        {
-            id: 'yahuarcocha',
-            name: 'Laguna de Yahuarcocha',
-            description: 'Hermosa laguna ubicada al norte de Ibarra, conocida por su historia y belleza natural. Ideal para deportes acuáticos y relajación.',
-            coordinates: { lat: 0.3833, lng: -78.1167 },
-            image: 'images/yahuarcocha_laguna.jpg',
-            mapUrl: 'https://maps.app.goo.gl/wpDktEnWtyxM2XqR8',
-            category: 'natural',
-            activities: ['Deportes acuáticos', 'Fotografía', 'Caminatas'],
-            openHours: '24 horas',
-            entrance: 'Gratuito'
-        },
-        {
-            id: 'volcan_imbabura',
-            name: 'Volcán Imbabura',
-            description: 'Majestuoso volcán que domina el paisaje de la provincia. Perfecto para montañismo y observación de la naturaleza.',
-            coordinates: { lat: 0.2622, lng: -78.1756 },
-            image: 'images/imbabura_volcan.jpg',
-            mapUrl: 'https://maps.app.goo.gl/zmWYeZJKANBPQTAG8',
-            category: 'adventure',
-            activities: ['Montañismo', 'Trekking', 'Observación de flora'],
-            openHours: 'Amanecer a atardecer',
-            entrance: 'Guía recomendado'
-        },
-        {
-            id: 'centro_ibarra',
-            name: 'Centro Histórico de Ibarra',
-            description: 'El corazón de la Ciudad Blanca, con arquitectura colonial, iglesias históricas y la vibrante vida cultural de Imbabura.',
-            coordinates: { lat: 0.3516, lng: -78.1224 },
-            image: 'images/ibarra_ciudad.jpg',
-            mapUrl: 'https://maps.app.goo.gl/t37xMndLDtqnMYtK9',
-            category: 'cultural',
-            activities: ['Turismo cultural', 'Gastronomía', 'Compras'],
-            openHours: '6:00 AM - 10:00 PM',
-            entrance: 'Gratuito'
-        },
-        {
-            id: 'naranjito_pueblo',
-            name: 'Pueblo de Naranjito',
-            description: 'Pintoresco pueblo que conserva las tradiciones ancestrales de Imbabura, ubicado en la parroquia de Caranqui.',
-            coordinates: { lat: 0.3283, lng: -78.1456 },
-            image: 'images/naranjito_pueblo.jpg',
-            mapUrl: 'https://maps.app.goo.gl/nWd3nHpLp56f1acF6',
-            category: 'traditional',
-            activities: ['Turismo comunitario', 'Artesanías', 'Tradiciones'],
-            openHours: 'Todo el día',
-            entrance: 'Gratuito'
-        }
-    ],
-
-    // Configuración del clima
-    weather: {
-        apiKey: '', // Se configurará dinámicamente
-        baseUrl: 'https://api.openweathermap.org/data/2.5/weather',
-        currentData: null,
-        lastUpdate: null
-    },
-
-    // Configuración de animaciones
-    animations: {
-        observerOptions: {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        }
-    }
-};
-
-// Funciones de inicialización
 document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
+    // Inicializar todas las funcionalidades
+    initLanguageSelector();
+    initScrollEffects();
+    initNavbarEffects();
+    initFilterSystem();
+    initCardAnimations();
+    initModal();
+    initScrollToTop();
+    initLazyLoading();
+    initSearchFunctionality();
+    initWeatherWidget();
+    initMapInteractions();
 });
 
-function initializeApp() {
-    console.log('Inicializando aplicación de ubicación...');
+// Selector de idioma (heredado del patrón sabores)
+function initLanguageSelector() {
+    const languageSelector = document.getElementById('language-selector');
     
-    // Inicializar componentes
-    initializeScrollAnimations();
-    initializeNavbarEffects();
-    initializePointsOfInterest();
-    initializeWeatherWidget();
-    initializeMapInteractions();
-    initializeParallaxEffects();
-    
-    console.log('Aplicación de ubicación inicializada correctamente');
+    if (languageSelector) {
+        languageSelector.addEventListener('change', function() {
+            const selectedLang = this.value;
+            showLoadingIndicator();
+            
+            setTimeout(() => {
+                window.location.href = `ubicacion.php?lang=${selectedLang}`;
+            }, 500);
+        });
+    }
 }
 
-// Gestión de puntos de interés
-function initializePointsOfInterest() {
-    const poiContainer = document.getElementById('points-of-interest-grid');
-    if (!poiContainer) return;
-
-    // Limpiar contenedor
-    poiContainer.innerHTML = '';
-
-    // Crear tarjetas para cada punto de interés
-    UbicacionApp.pointsOfInterest.forEach((poi, index) => {
-        const poiCard = createPOICard(poi, index);
-        poiContainer.appendChild(poiCard);
+// Efectos de scroll (heredado del patrón sabores)
+function initScrollEffects() {
+    const navbar = document.querySelector('.navbar');
+    let lastScrollTop = 0;
+    
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Efecto de transparencia en navbar
+        if (scrollTop > 100) {
+            navbar.style.backgroundColor = 'rgba(139, 69, 19, 0.95)';
+            navbar.style.backdropFilter = 'blur(10px)';
+        } else {
+            navbar.style.backgroundColor = '';
+            navbar.style.backdropFilter = '';
+        }
+        
+        lastScrollTop = scrollTop;
+        
+        // Animaciones de elementos al hacer scroll
+        animateOnScroll();
+        
+        // Mostrar/ocultar botón scroll to top
+        toggleScrollToTop();
     });
+}
 
-    // Aplicar animaciones escalonadas
-    const poiCards = poiContainer.querySelectorAll('.poi-card');
-    poiCards.forEach((card, index) => {
+// Efectos de navegación (heredado del patrón sabores)
+function initNavbarEffects() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+        });
+        
+        link.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('active')) {
+                this.style.transform = 'translateY(0)';
+            }
+        });
+    });
+}
+
+// Sistema de filtros (adaptado para ubicaciones)
+function initFilterSystem() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const saborCards = document.querySelectorAll('.sabor-card');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remover clase active de todos los botones
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Agregar clase active al botón clickeado
+            this.classList.add('active');
+            
+            const filterValue = this.getAttribute('data-filter');
+            
+            // Filtrar tarjetas
+            filterCards(filterValue, saborCards);
+            
+            // Mostrar notificación
+            showNotification(`Mostrando: ${this.textContent}`, 'info');
+        });
+    });
+}
+
+// Función para filtrar tarjetas (heredada del patrón sabores)
+function filterCards(filterValue, cards) {
+    cards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        
+        if (filterValue === 'all' || cardCategory === filterValue) {
+            card.style.display = 'block';
+            card.style.animation = 'fadeInUp 0.5s ease-out';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// Animaciones de tarjetas (adaptadas para ubicaciones)
+function initCardAnimations() {
+    const cards = document.querySelectorAll('.sabor-card');
+    
+    cards.forEach((card, index) => {
+        // Animación de entrada escalonada
         setTimeout(() => {
-            card.classList.add('animate-fade-in');
-        }, index * 200);
+            card.classList.add('fade-in');
+        }, index * 100);
+        
+        // Efectos hover adicionales
+        card.addEventListener('mouseenter', function() {
+            this.classList.add('sparkle');
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.classList.remove('sparkle');
+        });
+        
+        // Click para abrir modal (adaptado para ubicaciones)
+        card.addEventListener('click', function() {
+            const cardData = {
+                title: this.querySelector('.card-title').textContent,
+                description: this.querySelector('.card-description').textContent,
+                image: this.querySelector('img').src,
+                tags: Array.from(this.querySelectorAll('.tag')).map(tag => tag.textContent),
+                coordinates: this.querySelector('.coordinates span') ? this.querySelector('.coordinates span').textContent : 'No disponible',
+                altitude: this.querySelector('.altitude-badge') ? this.querySelector('.altitude-badge').textContent : 'No disponible',
+                locationType: this.querySelector('.prep-time') ? this.querySelector('.prep-time').textContent.replace(/.*\s/, '') : 'Lugar'
+            };
+            
+            openModal(cardData);
+        });
     });
 }
 
-function createPOICard(poi, index) {
-    const card = document.createElement('div');
-    card.className = 'poi-card hover-glow';
-    card.dataset.category = poi.category;
-    
-    // Crear URL del mini-mapa
-    const miniMapUrl = createMiniMapUrl(poi.coordinates.lat, poi.coordinates.lng, poi.name);
-    
-    card.innerHTML = `
-        <div class="poi-image" style="background-image: url('${poi.image}')">
-            <div class="poi-category-badge">
-                ${getCategoryIcon(poi.category)} ${getCategoryName(poi.category)}
-            </div>
-        </div>
-        <div class="poi-content">
-            <h4 class="poi-title">
-                <i class="fas fa-map-marker-alt text-gradient me-2"></i>
-                ${poi.name}
-            </h4>
-            <p class="poi-description">${poi.description}</p>
-            
-            <div class="poi-details mb-3">
-                <div class="detail-item">
-                    <i class="fas fa-clock me-2"></i>
-                    <strong>Horarios:</strong> ${poi.openHours}
+// Sistema de modal (adaptado para ubicaciones)
+function initModal() {
+    // Crear modal dinámicamente
+    const modalHTML = `
+        <div class="modal fade" id="saborModal" tabindex="-1" aria-labelledby="saborModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="saborModalLabel">Detalles de la Ubicación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="" alt="" class="modal-image" id="modalImage">
+                        <h4 id="modalTitle"></h4>
+                        <div id="modalTags" class="card-tags mb-3"></div>
+                        <div id="modalRating" class="card-rating mb-3"></div>
+                        <p id="modalDescription"></p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Altitud:</strong>
+                                <div id="modalDifficulty" class="difficulty mt-2"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Tipo de lugar:</strong>
+                                <div id="modalPrepTime" class="prep-time mt-2"></div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <div id="modalMiniMap" class="map-frame" style="height: 200px;">
+                                <iframe src="" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" onclick="openInGoogleMaps()">Ver en Google Maps</button>
+                    </div>
                 </div>
-                <div class="detail-item">
-                    <i class="fas fa-ticket-alt me-2"></i>
-                    <strong>Entrada:</strong> ${poi.entrance}
-                </div>
-                <div class="detail-item">
-                    <i class="fas fa-map me-2"></i>
-                    <strong>Coordenadas:</strong> 
-                    <span class="coordinates">${poi.coordinates.lat.toFixed(4)}, ${poi.coordinates.lng.toFixed(4)}</span>
-                </div>
-            </div>
-            
-            <div class="poi-activities mb-3">
-                <h6><i class="fas fa-hiking me-2"></i>Actividades:</h6>
-                <div class="activities-tags">
-                    ${poi.activities.map(activity => `<span class="activity-tag">${activity}</span>`).join('')}
-                </div>
-            </div>
-            
-            <div class="poi-mini-map">
-                <iframe src="${miniMapUrl}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-            
-            <div class="poi-actions">
-                <a href="${poi.mapUrl}" target="_blank" class="btn-poi">
-                    <i class="fas fa-external-link-alt"></i>
-                    Ver en Google Maps
-                </a>
-                <button class="btn-poi" onclick="showPOIDetails('${poi.id}')">
-                    <i class="fas fa-info-circle"></i>
-                    Más Información
-                </button>
             </div>
         </div>
     `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
 
-    // Agregar eventos
-    card.addEventListener('mouseenter', () => {
-        card.style.transform = 'translateY(-10px) scale(1.02)';
+// Abrir modal con datos (adaptado para ubicaciones)
+function openModal(data) {
+    document.getElementById('modalTitle').textContent = data.title;
+    document.getElementById('modalDescription').textContent = data.description;
+    document.getElementById('modalImage').src = data.image;
+    document.getElementById('modalImage').alt = data.title;
+    
+    // Tags
+    const tagsContainer = document.getElementById('modalTags');
+    tagsContainer.innerHTML = '';
+    data.tags.forEach(tag => {
+        const tagElement = document.createElement('span');
+        tagElement.className = 'tag';
+        tagElement.textContent = tag;
+        tagsContainer.appendChild(tagElement);
     });
     
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'translateY(0) scale(1)';
-    });
-
-    return card;
+    // Coordenadas (en lugar de rating)
+    document.getElementById('modalRating').innerHTML = `
+        <div class="coordinates">
+            <i class="fas fa-map-pin"></i>
+            <span>${data.coordinates}</span>
+        </div>
+    `;
+    
+    // Altitud (en lugar de dificultad)
+    const difficultyContainer = document.getElementById('modalDifficulty');
+    difficultyContainer.innerHTML = `<div class="altitude-badge">${data.altitude}</div>`;
+    
+    // Tipo de lugar (en lugar de tiempo de preparación)
+    document.getElementById('modalPrepTime').textContent = data.locationType;
+    
+    // Mini mapa
+    const coords = data.coordinates.split(',');
+    if (coords.length === 2) {
+        const lat = parseFloat(coords[0].replace('°N', ''));
+        const lng = parseFloat(coords[1].replace('°W', '')) * -1;
+        const mapUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dO_BcqOWBOUOdg&q=${lat},${lng}&zoom=14`;
+        document.querySelector('#modalMiniMap iframe').src = mapUrl;
+    }
+    
+    // Mostrar modal
+    const modal = new bootstrap.Modal(document.getElementById('saborModal'));
+    modal.show();
 }
 
-function createMiniMapUrl(lat, lng, name) {
-    const zoom = 14;
-    return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dO_BcqOWBOUOdg&q=${lat},${lng}&zoom=${zoom}&maptype=satellite`;
-}
-
-function getCategoryIcon(category) {
-    const icons = {
-        natural: 'fas fa-leaf',
-        adventure: 'fas fa-mountain',
-        cultural: 'fas fa-landmark',
-        traditional: 'fas fa-home'
-    };
-    return `<i class="${icons[category] || 'fas fa-map-marker-alt'}"></i>`;
-}
-
-function getCategoryName(category) {
-    const names = {
-        natural: 'Natural',
-        adventure: 'Aventura',
-        cultural: 'Cultural',
-        traditional: 'Tradicional'
-    };
-    return names[category] || 'Punto de Interés';
-}
-
-// Widget del clima
-function initializeWeatherWidget() {
+// Widget del clima (funcionalidad específica de ubicación)
+function initWeatherWidget() {
     loadWeatherData();
     
     // Actualizar cada 10 minutos
@@ -248,17 +256,11 @@ async function loadWeatherData() {
     showWeatherLoader(weatherContainer);
 
     try {
-        // Intentar con diferentes APIs de clima gratuitas
-        let weatherData = await fetchWeatherFromOpenWeather();
-        
-        if (!weatherData) {
-            weatherData = await fetchWeatherFromAlternativeAPI();
-        }
+        // Simular datos del clima para Imbabura
+        const weatherData = await simulateWeatherData();
         
         if (weatherData) {
             displayWeatherData(weatherContainer, weatherData);
-            UbicacionApp.weather.currentData = weatherData;
-            UbicacionApp.weather.lastUpdate = new Date();
         } else {
             showWeatherError(weatherContainer);
         }
@@ -268,19 +270,11 @@ async function loadWeatherData() {
     }
 }
 
-async function fetchWeatherFromOpenWeather() {
-    // Esta función requiere una API key válida
-    // Por ahora, simularemos datos del clima
-    return null;
-}
-
-async function fetchWeatherFromAlternativeAPI() {
-    // Simular datos del clima para Naranjito, Imbabura
-    // En un entorno real, esto se conectaría a una API de clima
+async function simulateWeatherData() {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve({
-                location: 'Naranjito, Imbabura',
+                location: 'Imbabura, Ecuador',
                 temperature: Math.round(18 + Math.random() * 8), // 18-26°C típico para la región
                 description: getRandomWeatherDescription(),
                 humidity: Math.round(60 + Math.random() * 30), // 60-90%
@@ -323,10 +317,10 @@ function showWeatherLoader(container) {
 function displayWeatherData(container, data) {
     container.innerHTML = `
         <div class="weather-current">
-            <div class="weather-icon">${data.icon}</div>
+            <div class="weather-icon" style="font-size: 3rem; margin-bottom: 1rem;">${data.icon}</div>
             <div class="weather-temp">${data.temperature}°C</div>
             <div class="weather-description">${data.description}</div>
-            <div class="weather-location">
+            <div class="weather-location" style="margin-top: 1rem; opacity: 0.9;">
                 <i class="fas fa-map-marker-alt me-2"></i>
                 ${data.location}
             </div>
@@ -386,11 +380,11 @@ function displayWeatherData(container, data) {
 
 function showWeatherError(container) {
     container.innerHTML = `
-        <div class="weather-error">
+        <div class="weather-error text-center">
             <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
             <h5>No se pudo cargar el clima</h5>
             <p>Información del clima no disponible en este momento.</p>
-            <button class="btn-ubicacion mt-2" onclick="loadWeatherData()">
+            <button class="btn btn-light mt-2" onclick="loadWeatherData()">
                 <i class="fas fa-redo me-2"></i>
                 Reintentar
             </button>
@@ -398,16 +392,18 @@ function showWeatherError(container) {
     `;
 }
 
-// Interacciones con mapas
-function initializeMapInteractions() {
+// Interacciones con mapas (funcionalidad específica de ubicación)
+function initMapInteractions() {
     const mainMap = document.querySelector('.map-frame iframe');
     if (mainMap) {
         // Agregar indicador de carga
         const mapContainer = mainMap.parentElement;
         const loader = document.createElement('div');
-        loader.className = 'map-loader';
+        loader.className = 'map-loader text-center';
         loader.innerHTML = `
-            <div class="spinner"></div>
+            <div class="spinner-border text-primary mb-2" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
             <p>Cargando mapa...</p>
         `;
         mapContainer.appendChild(loader);
@@ -419,124 +415,261 @@ function initializeMapInteractions() {
     }
 }
 
-// Animaciones de scroll
-function initializeScrollAnimations() {
-    const observer = new IntersectionObserver((entries) => {
+// Botón scroll to top (heredado del patrón sabores)
+function initScrollToTop() {
+    const scrollButton = document.createElement('button');
+    scrollButton.className = 'scroll-to-top';
+    scrollButton.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    scrollButton.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+    
+    document.body.appendChild(scrollButton);
+}
+
+// Mostrar/ocultar botón scroll to top (heredado del patrón sabores)
+function toggleScrollToTop() {
+    const scrollButton = document.querySelector('.scroll-to-top');
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    if (scrollTop > 300) {
+        scrollButton.classList.add('visible');
+    } else {
+        scrollButton.classList.remove('visible');
+    }
+}
+
+// Lazy loading de imágenes (heredado del patrón sabores)
+function initLazyLoading() {
+    const images = document.querySelectorAll('img[data-src]');
+    
+    const imageObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const element = entry.target;
-                
-                if (element.classList.contains('geo-card')) {
-                    element.classList.add('animate-slide-left');
-                } else if (element.classList.contains('poi-card')) {
-                    element.classList.add('animate-fade-in');
-                } else if (element.classList.contains('weather-section')) {
-                    element.classList.add('animate-slide-right');
-                }
-                
-                observer.unobserve(element);
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove('skeleton');
+                observer.unobserve(img);
             }
         });
-    }, UbicacionApp.animations.observerOptions);
-
-    // Observar elementos
-    document.querySelectorAll('.geo-card, .poi-card, .weather-section').forEach(el => {
-        observer.observe(el);
+    });
+    
+    images.forEach(img => {
+        img.classList.add('skeleton');
+        imageObserver.observe(img);
     });
 }
 
-// Efectos del navbar
-function initializeNavbarEffects() {
-    const navbar = document.querySelector('.navbar-custom');
-    if (!navbar) return;
-
-    window.addEventListener('scroll', () => {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        if (scrollTop > 100) {
-            navbar.style.background = 'linear-gradient(135deg, rgba(139, 69, 19, 0.95) 0%, rgba(210, 105, 30, 0.95) 100%)';
-            navbar.style.backdropFilter = 'blur(10px)';
-        } else {
-            navbar.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
-            navbar.style.backdropFilter = 'none';
-        }
-    });
-}
-
-// Efectos parallax
-function initializeParallaxEffects() {
-    const heroSection = document.querySelector('.hero-section');
-    if (!heroSection) return;
-
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const rate = scrolled * -0.5;
-        
-        heroSection.style.transform = `translateY(${rate}px)`;
-    });
-}
-
-// Funciones de utilidad
-function showPOIDetails(poiId) {
-    const poi = UbicacionApp.pointsOfInterest.find(p => p.id === poiId);
-    if (!poi) return;
-
-    const modal = document.createElement('div');
-    modal.className = 'modal fade';
-    modal.innerHTML = `
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-gradient">
-                        ${getCategoryIcon(poi.category)} ${poi.name}
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <img src="${poi.image}" alt="${poi.name}" class="img-fluid rounded mb-3">
-                            <div class="poi-coordinates">
-                                <h6><i class="fas fa-map me-2"></i>Coordenadas:</h6>
-                                <p class="coordinates">${poi.coordinates.lat.toFixed(6)}, ${poi.coordinates.lng.toFixed(6)}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Descripción:</strong></p>
-                            <p>${poi.description}</p>
-                            
-                            <p><strong>Categoría:</strong> ${getCategoryName(poi.category)}</p>
-                            <p><strong>Horarios:</strong> ${poi.openHours}</p>
-                            <p><strong>Entrada:</strong> ${poi.entrance}</p>
-                            
-                            <h6><i class="fas fa-hiking me-2"></i>Actividades disponibles:</h6>
-                            <ul>
-                                ${poi.activities.map(activity => `<li>${activity}</li>`).join('')}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="${poi.mapUrl}" target="_blank" class="btn btn-ubicacion">
-                        <i class="fas fa-external-link-alt me-2"></i>
-                        Abrir en Google Maps
-                    </a>
-                    <button type="button" class="btn btn-secondary" onclick="shareLocation('${poi.name}', ${poi.coordinates.lat}, ${poi.coordinates.lng})">
-                        <i class="fas fa-share me-2"></i>
-                        Compartir Ubicación
-                    </button>
-                </div>
+// Funcionalidad de búsqueda (adaptada para ubicaciones)
+function initSearchFunctionality() {
+    // Crear barra de búsqueda
+    const searchHTML = `
+        <div class="search-container mb-4">
+            <div class="input-group">
+                <input type="text" class="form-control" id="searchInput" placeholder="Buscar ubicaciones...">
+                <button class="btn btn-outline-primary" type="button" id="searchButton">
+                    <i class="fas fa-search"></i>
+                </button>
             </div>
         </div>
     `;
     
-    document.body.appendChild(modal);
-    const bsModal = new bootstrap.Modal(modal);
-    bsModal.show();
+    const filtersSection = document.querySelector('.filters-section .container');
+    if (filtersSection) {
+        filtersSection.insertAdjacentHTML('afterbegin', searchHTML);
+        
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        
+        searchInput.addEventListener('input', performSearch);
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+}
+
+// Realizar búsqueda (adaptada para ubicaciones)
+function performSearch() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const cards = document.querySelectorAll('.sabor-card');
+    let visibleCount = 0;
     
-    modal.addEventListener('hidden.bs.modal', () => {
-        document.body.removeChild(modal);
+    cards.forEach(card => {
+        const title = card.querySelector('.card-title').textContent.toLowerCase();
+        const description = card.querySelector('.card-description').textContent.toLowerCase();
+        const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
+        
+        const matches = title.includes(searchTerm) || 
+                       description.includes(searchTerm) || 
+                       tags.some(tag => tag.includes(searchTerm));
+        
+        if (matches || searchTerm === '') {
+            card.style.display = 'block';
+            card.style.animation = 'fadeInUp 0.5s ease-out';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
     });
+    
+    // Mostrar mensaje si no hay resultados
+    showSearchResults(visibleCount, searchTerm);
+}
+
+// Mostrar resultados de búsqueda (adaptada para ubicaciones)
+function showSearchResults(count, searchTerm) {
+    let existingMessage = document.querySelector('.search-results-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    if (searchTerm && count === 0) {
+        const message = document.createElement('div');
+        message.className = 'search-results-message alert alert-info text-center';
+        message.innerHTML = `
+            <i class="fas fa-search"></i>
+            No se encontraron ubicaciones que coincidan con "${searchTerm}"
+        `;
+        
+        const grid = document.querySelector('.sabores-grid .container');
+        grid.insertBefore(message, grid.firstChild);
+    } else if (searchTerm && count > 0) {
+        const message = document.createElement('div');
+        message.className = 'search-results-message alert alert-success text-center';
+        message.innerHTML = `
+            <i class="fas fa-check"></i>
+            Se encontraron ${count} ubicación${count !== 1 ? 'es' : ''} que coinciden con "${searchTerm}"
+        `;
+        
+        const grid = document.querySelector('.sabores-grid .container');
+        grid.insertBefore(message, grid.firstChild);
+    }
+}
+
+// Animaciones al hacer scroll (heredado del patrón sabores)
+function animateOnScroll() {
+    const elements = document.querySelectorAll('.sabor-card, .info-card, .filter-btn');
+    
+    elements.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 150;
+        
+        if (elementTop < window.innerHeight - elementVisible) {
+            element.classList.add('fade-in');
+        }
+    });
+}
+
+// Indicador de carga (heredado del patrón sabores)
+function showLoadingIndicator() {
+    const indicator = document.createElement('div');
+    indicator.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(139, 69, 19, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            color: white;
+            font-size: 1.2rem;
+        ">
+            <div style="text-align: center;">
+                <div style="
+                    width: 50px;
+                    height: 50px;
+                    border: 3px solid rgba(255,255,255,0.3);
+                    border-top: 3px solid white;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin: 0 auto 1rem;
+                "></div>
+                Cambiando idioma...
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(indicator);
+}
+
+// Función para mostrar notificaciones (heredada del patrón sabores)
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
+        color: white;
+        border-radius: 5px;
+        z-index: 1000;
+        animation: slideInRight 0.3s ease-out;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Efectos de parallax para el hero (heredado del patrón sabores)
+function initParallaxEffect() {
+    const hero = document.querySelector('.sabores-hero');
+    
+    if (hero) {
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.3;
+            hero.style.transform = `translateY(${rate}px)`;
+        });
+    }
+}
+
+// Inicializar parallax (heredado del patrón sabores)
+initParallaxEffect();
+
+// Función para manejar errores de carga de imágenes (heredada del patrón sabores)
+function handleImageErrors() {
+    const images = document.querySelectorAll('img');
+    
+    images.forEach(img => {
+        img.addEventListener('error', function() {
+            this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg==';
+            this.alt = 'Imagen no disponible';
+        });
+    });
+}
+
+// Funciones específicas para ubicación
+function openInGoogleMaps() {
+    const modal = document.getElementById('saborModal');
+    const coordinates = modal.querySelector('#modalRating .coordinates span').textContent;
+    const coords = coordinates.split(',');
+    
+    if (coords.length === 2) {
+        const lat = parseFloat(coords[0].replace('°N', ''));
+        const lng = parseFloat(coords[1].replace('°W', '')) * -1;
+        const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+        window.open(url, '_blank');
+    }
 }
 
 function shareLocation(name, lat, lng) {
@@ -558,60 +691,6 @@ function shareLocation(name, lat, lng) {
     }
 }
 
-function filterPOI(category) {
-    const poiCards = document.querySelectorAll('.poi-card');
-    
-    poiCards.forEach(card => {
-        if (category === 'all' || card.dataset.category === category) {
-            card.style.display = 'block';
-            card.classList.add('animate-fade-in');
-        } else {
-            card.style.display = 'none';
-        }
-    });
-}
-
-function calculateDistance(lat1, lng1, lat2, lng2) {
-    const R = 6371; // Radio de la Tierra en km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLng = (lng2 - lng1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLng/2) * Math.sin(dLng/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
-}
-
-function getDirections(destinationLat, destinationLng, destinationName) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const userLat = position.coords.latitude;
-                const userLng = position.coords.longitude;
-                const directionsUrl = `https://www.google.com/maps/dir/${userLat},${userLng}/${destinationLat},${destinationLng}`;
-                window.open(directionsUrl, '_blank');
-            },
-            () => {
-                // Si no se puede obtener la ubicación del usuario
-                const directionsUrl = `https://www.google.com/maps/dir//${destinationLat},${destinationLng}`;
-                window.open(directionsUrl, '_blank');
-            }
-        );
-    } else {
-        const directionsUrl = `https://www.google.com/maps/dir//${destinationLat},${destinationLng}`;
-        window.open(directionsUrl, '_blank');
-    }
-}
-
-// Función para cambio de idioma
-function changeLanguage(langCode) {
-    console.log(`Cambiando idioma a: ${langCode}`);
-    const currentUrl = new URL(window.location);
-    currentUrl.searchParams.set('lang', langCode);
-    window.location.href = currentUrl.toString();
-}
-
-// Función para scroll suave
 function smoothScrollTo(elementId) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -622,23 +701,44 @@ function smoothScrollTo(elementId) {
     }
 }
 
+// Inicializar manejo de errores de imágenes (heredado del patrón sabores)
+handleImageErrors();
+
+// Agregar estilos para las animaciones (heredado del patrón sabores)
+const additionalStyles = document.createElement('style');
+additionalStyles.textContent = `
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(additionalStyles);
+
 // Exportar funciones globales
-window.UbicacionApp = UbicacionApp;
-window.showPOIDetails = showPOIDetails;
+window.openInGoogleMaps = openInGoogleMaps;
 window.shareLocation = shareLocation;
-window.filterPOI = filterPOI;
-window.getDirections = getDirections;
-window.changeLanguage = changeLanguage;
 window.smoothScrollTo = smoothScrollTo;
 window.loadWeatherData = loadWeatherData;
-
-// Manejo de errores global
-window.addEventListener('error', function(e) {
-    console.error('Error en la aplicación de ubicación:', e.error);
-});
-
-// Función de limpieza al salir de la página
-window.addEventListener('beforeunload', function() {
-    console.log('Limpiando recursos de la aplicación de ubicación...');
-});
 

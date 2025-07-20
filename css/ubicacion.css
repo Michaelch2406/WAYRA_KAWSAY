@@ -1,45 +1,22 @@
-/* Ubicacion.css - Diseño para la página de ubicación de Imbabura, Ecuador */
+/* Estilos específicos para la página de ubicación - Siguiendo el patrón de sabores */
 
-/* Variables de colores */
 :root {
-    /* Colores Base */
-    --primary: #8B4513;
-    --secondary: #D2691E;
-    --accent: #CD853F;
-    --text: #2C1810;
-    --light: #F5F5DC;
-    
-    /* Sabores Gastronómicos */
-    --food-warm: #FF6B35;
-    --food-spice: #F7931E;
-    
-    /* Artesanías */
-    --craft-primary: #A0522D;
-    --craft-secondary: #DEB887;
-    --craft-accent: #8FBC8F;
-    --craft-warm: #D2B48C;
-    --craft-earth: #BC8F8F;
-    --craft-gold: #DAA520;
-    
-    /* Colores específicos para ubicación */
-    --map-primary: #4A90E2;
-    --map-secondary: #7ED321;
-    --weather-blue: #5DADE2;
-    --weather-orange: #F39C12;
-    
-    /* Sombras y efectos */
-    --shadow-light: 0 2px 10px rgba(139, 69, 19, 0.1);
-    --shadow-medium: 0 4px 20px rgba(139, 69, 19, 0.15);
-    --shadow-heavy: 0 8px 30px rgba(139, 69, 19, 0.2);
-    --shadow-map: 0 6px 25px rgba(74, 144, 226, 0.2);
-    
-    /* Transiciones */
-    --transition-fast: 0.2s ease;
-    --transition-medium: 0.3s ease;
-    --transition-slow: 0.5s ease;
+    --color-primary: #8B4513;
+    --color-secondary: #D2691E;
+    --color-accent: #CD853F;
+    --color-text: #2C1810;
+    --color-light: #F5F5DC;
+    --color-white: #FFFFFF;
+    --color-overlay: rgba(0, 0, 0, 0.6);
+    --color-food-warm: #FF6B35;
+    --color-food-spice: #F7931E;
+    --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.15);
+    --shadow-strong: 0 8px 30px rgba(0, 0, 0, 0.25);
+    --transition: all 0.3s ease;
+    --border-radius: 15px;
 }
 
-/* Reset y estilos base */
 * {
     margin: 0;
     padding: 0;
@@ -49,54 +26,130 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: var(--text);
-    background: linear-gradient(135deg, var(--light) 0%, #f0f0e8 100%);
-    min-height: 100vh;
+    color: var(--color-text);
+    background-color: var(--color-light);
 }
 
-/* Navbar personalizado */
-.navbar-custom {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+/* Navegación heredada del patrón sabores */
+.navbar {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)) !important;
     box-shadow: var(--shadow-medium);
     padding: 1rem 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    transition: var(--transition);
 }
 
-.navbar-custom .navbar-brand {
-    color: var(--light) !important;
+.navbar-brand {
     font-weight: bold;
     font-size: 1.5rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    transition: var(--transition-medium);
+    color: var(--color-white) !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.navbar-custom .navbar-brand:hover {
-    transform: scale(1.05);
-    color: var(--craft-gold) !important;
-}
-
-.navbar-custom .nav-link {
-    color: var(--light) !important;
+.navbar-nav .nav-link {
+    color: var(--color-white) !important;
     font-weight: 500;
     margin: 0 0.5rem;
     padding: 0.5rem 1rem !important;
     border-radius: 25px;
-    transition: var(--transition-medium);
+    transition: var(--transition);
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#language-selector {
+    background-color: var(--color-white);
+    border: 2px solid var(--color-accent);
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+/* Hero section específico para ubicación - usando el mismo patrón que sabores */
+.sabores-hero {
+    position: relative;
+    min-height: 60vh;
+    background: linear-gradient(var(--color-overlay), var(--color-overlay)), url('../images/imbabura_paisaje.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 76px; /* Compensar navbar fija */
+}
+
+.hero-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 3rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-strong);
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+    backdrop-filter: blur(10px);
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-title {
+    color: var(--color-primary);
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hero-subtitle {
+    color: var(--color-text);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+}
+
+/* Sección de filtros - mismo estilo que sabores */
+.filters-section {
+    background: var(--color-white);
+    padding: 2rem 0;
+    box-shadow: var(--shadow-light);
+    position: sticky;
+    top: 76px;
+    z-index: 100;
+}
+
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filter-btn {
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: var(--transition);
+    cursor: pointer;
     position: relative;
     overflow: hidden;
 }
 
-.navbar-custom .nav-link:hover,
-.navbar-custom .nav-link.active {
-    background: rgba(255, 255, 255, 0.2);
-    color: var(--craft-gold) !important;
+.filter-btn:hover,
+.filter-btn.active {
+    background: var(--color-primary);
+    color: var(--color-white);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-light);
+    box-shadow: var(--shadow-medium);
 }
 
-.navbar-custom .nav-link::before {
+.filter-btn::before {
     content: '';
     position: absolute;
     top: 0;
@@ -104,70 +157,201 @@ body {
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: var(--transition-medium);
+    transition: left 0.5s;
 }
 
-.navbar-custom .nav-link:hover::before {
+.filter-btn:hover::before {
     left: 100%;
 }
 
-/* Header principal */
-.hero-section {
-    background: linear-gradient(rgba(139, 69, 19, 0.8), rgba(210, 105, 30, 0.8)),
-                url('../images/imbabura_paisaje.jpg') center/cover;
-    min-height: 60vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-    position: relative;
-    overflow: hidden;
+/* Tarjetas de ubicación - usando el mismo patrón que sabores */
+.sabores-grid {
+    padding: 4rem 0;
 }
 
-.hero-section::before {
+.sabor-card {
+    background: var(--color-white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    transition: var(--transition);
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+}
+
+.sabor-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: var(--shadow-strong);
+}
+
+.sabor-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 100%);
+    background: linear-gradient(45deg, var(--color-food-warm), var(--color-food-spice));
+    opacity: 0;
+    transition: var(--transition);
+    z-index: 1;
 }
 
-.hero-content {
+.sabor-card:hover::before {
+    opacity: 0.1;
+}
+
+.card-image-container {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.sabor-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.sabor-card:hover img {
+    transform: scale(1.1);
+}
+
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-overlay);
+    opacity: 0;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sabor-card:hover .card-overlay {
+    opacity: 1;
+}
+
+.overlay-content {
+    color: var(--color-white);
+    text-align: center;
+    transform: translateY(20px);
+    transition: var(--transition);
+}
+
+.sabor-card:hover .overlay-content {
+    transform: translateY(0);
+}
+
+.card-body {
+    padding: 2rem;
     position: relative;
     z-index: 2;
-    max-width: 800px;
-    padding: 2rem;
-    animation: fadeInUp 1s ease-out;
 }
 
-.hero-title {
-    font-size: 3.5rem;
+.card-title {
+    color: var(--color-primary);
+    font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 1rem;
-    text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
-    background: linear-gradient(45deg, var(--craft-gold), var(--light));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    transition: var(--transition);
 }
 
-.hero-subtitle {
-    font-size: 1.3rem;
-    margin-bottom: 2rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    opacity: 0.95;
+.sabor-card:hover .card-title {
+    color: var(--color-food-warm);
 }
 
-/* Contenido principal */
-.main-content {
-    padding: 4rem 0;
+.card-description {
+    color: var(--color-text);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.tag {
+    background: var(--color-accent);
+    color: var(--color-white);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Coordenadas - adaptando el estilo de rating */
+.card-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.coordinates {
+    background: rgba(74, 144, 226, 0.1);
+    color: var(--color-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(139, 69, 19, 0.1);
+}
+
+/* Adaptando difficulty para mostrar altitud */
+.difficulty {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--color-text);
+}
+
+.altitude-badge {
+    background: var(--color-food-warm);
+    color: var(--color-white);
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.prep-time {
+    color: var(--color-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Sección del mapa principal */
+.main-map-section {
+    background: linear-gradient(135deg, var(--color-light), var(--color-white));
+    padding: 5rem 0;
 }
 
 .section-title {
-    color: var(--primary);
+    color: var(--color-primary);
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 3rem;
@@ -184,69 +368,15 @@ body {
     transform: translateX(-50%);
     width: 100px;
     height: 4px;
-    background: linear-gradient(90deg, var(--craft-gold), var(--food-spice));
+    background: linear-gradient(90deg, var(--color-food-warm), var(--color-food-spice));
     border-radius: 2px;
 }
 
-/* Sección de información geográfica */
-.geo-info-section {
-    background: white;
-    border-radius: 20px;
-    padding: 3rem;
-    margin-bottom: 3rem;
-    box-shadow: var(--shadow-light);
-    position: relative;
-    overflow: hidden;
-}
-
-.geo-info-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, var(--map-primary), var(--map-secondary));
-}
-
-.geo-card {
-    background: linear-gradient(135deg, var(--light) 0%, white 100%);
-    border-radius: 15px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: var(--shadow-light);
-    transition: var(--transition-medium);
-    border-left: 5px solid var(--craft-gold);
-}
-
-.geo-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-medium);
-}
-
-.geo-card h4 {
-    color: var(--primary);
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    font-weight: bold;
-}
-
-.geo-card .icon {
-    font-size: 2rem;
-    color: var(--craft-gold);
-    margin-bottom: 1rem;
-}
-
-/* Sección del mapa principal */
-.main-map-section {
-    margin: 4rem 0;
-}
-
 .map-container {
-    background: white;
-    border-radius: 20px;
+    background: var(--color-white);
+    border-radius: var(--border-radius);
     padding: 2rem;
-    box-shadow: var(--shadow-map);
+    box-shadow: var(--shadow-medium);
     position: relative;
     overflow: hidden;
 }
@@ -258,133 +388,91 @@ body {
     left: 0;
     right: 0;
     height: 5px;
-    background: linear-gradient(90deg, var(--map-primary), var(--map-secondary));
+    background: linear-gradient(90deg, var(--color-food-warm), var(--color-food-spice));
 }
 
 .map-frame {
-    border-radius: 15px;
+    border-radius: var(--border-radius);
     overflow: hidden;
-    box-shadow: var(--shadow-medium);
-    transition: var(--transition-medium);
+    box-shadow: var(--shadow-light);
+    transition: var(--transition);
 }
 
 .map-frame:hover {
     transform: scale(1.02);
-    box-shadow: var(--shadow-heavy);
+    box-shadow: var(--shadow-strong);
 }
 
 .map-frame iframe {
     width: 100%;
     height: 450px;
     border: none;
-    transition: var(--transition-medium);
 }
 
-/* Puntos de interés */
-.points-of-interest {
-    margin: 4rem 0;
-}
-
-.poi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-.poi-card {
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: var(--shadow-light);
-    transition: var(--transition-medium);
-    position: relative;
-}
-
-.poi-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-heavy);
-}
-
-.poi-image {
-    height: 200px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
-
-.poi-image::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(transparent, rgba(0,0,0,0.3));
-}
-
-.poi-content {
+.map-info {
+    background: rgba(255, 107, 53, 0.05);
+    border-radius: var(--border-radius);
     padding: 1.5rem;
 }
 
-.poi-title {
-    color: var(--primary);
+.map-info h5 {
+    color: var(--color-primary);
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* Sección de información adicional - mismo patrón que sabores */
+.info-section {
+    background: linear-gradient(135deg, var(--color-light), var(--color-white));
+    padding: 5rem 0;
+}
+
+.info-card {
+    background: var(--color-white);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+    box-shadow: var(--shadow-light);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+.info-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--color-food-warm), var(--color-food-spice));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: var(--color-white);
+}
+
+.info-title {
+    color: var(--color-primary);
     font-size: 1.3rem;
     font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
-.poi-description {
-    color: var(--text);
     margin-bottom: 1rem;
-    line-height: 1.6;
 }
 
-.poi-mini-map {
-    height: 150px;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow-light);
+.info-description {
+    color: var(--color-text);
+    line-height: 1.7;
 }
 
-.poi-mini-map iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-.poi-actions {
-    display: flex;
-    gap: 1rem;
-}
-
-.btn-poi {
-    background: linear-gradient(45deg, var(--map-primary), var(--map-secondary));
-    border: none;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: bold;
-    transition: var(--transition-medium);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.btn-poi:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-medium);
-    color: white;
-}
-
-/* Sección del clima */
+/* Sección del clima - adaptada al patrón */
 .weather-section {
-    background: linear-gradient(135deg, var(--weather-blue) 0%, var(--weather-orange) 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--color-food-warm), var(--color-food-spice));
+    color: var(--color-white);
     border-radius: 25px;
-    padding: 3rem;
+    padding: 4rem 0;
     margin: 4rem 0;
     position: relative;
     overflow: hidden;
@@ -401,25 +489,39 @@ body {
     opacity: 0.3;
 }
 
-.weather-content {
-    position: relative;
-    z-index: 2;
-}
-
 .weather-title {
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 2rem;
     text-align: center;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 2;
 }
 
 .weather-info {
     background: rgba(255, 255, 255, 0.2);
-    border-radius: 15px;
+    border-radius: var(--border-radius);
     padding: 2rem;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    z-index: 2;
+}
+
+.weather-loader {
+    text-align: center;
+    padding: 2rem;
+}
+
+.weather-spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid var(--color-white);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
 }
 
 .weather-current {
@@ -469,70 +571,79 @@ body {
     font-weight: bold;
 }
 
-.weather-loader {
-    text-align: center;
+/* Modal para detalles de ubicaciones - mismo patrón que sabores */
+.modal-content {
+    border-radius: var(--border-radius);
+    border: none;
+    box-shadow: var(--shadow-strong);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: var(--color-white);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.modal-title {
+    font-weight: bold;
+}
+
+.btn-close {
+    filter: invert(1);
+}
+
+.modal-body {
     padding: 2rem;
 }
 
-.weather-spinner {
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    border-top: 4px solid white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 1rem;
+.modal-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
 }
 
-/* Footer personalizado */
-.footer-custom {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    color: var(--light);
+/* Footer heredado del patrón sabores */
+.footer {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: var(--color-white);
     padding: 3rem 0 1rem;
-    margin-top: 4rem;
+    margin-top: 3rem;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
 
 .footer-section h5 {
-    color: var(--craft-gold);
-    font-weight: bold;
+    color: var(--color-white);
     margin-bottom: 1rem;
-    font-size: 1.3rem;
+    font-weight: bold;
 }
 
+.footer-section p,
 .footer-section a {
-    color: var(--light);
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
-    transition: var(--transition-fast);
-    display: block;
-    margin-bottom: 0.5rem;
+    transition: var(--transition);
 }
 
 .footer-section a:hover {
-    color: var(--craft-gold);
-    transform: translateX(5px);
-}
-
-.social-icons a {
-    display: inline-block;
-    margin-right: 1rem;
-    font-size: 1.5rem;
-    transition: var(--transition-medium);
-}
-
-.social-icons a:hover {
-    transform: scale(1.2) rotate(5deg);
-    color: var(--craft-gold);
+    color: var(--color-white);
 }
 
 .footer-bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.2);
-    margin-top: 2rem;
     padding-top: 1rem;
     text-align: center;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.7);
 }
 
-/* Animaciones */
+/* Animaciones - heredadas del patrón sabores */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -571,55 +682,35 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-.animate-fade-in {
+.fade-in {
     animation: fadeInUp 0.8s ease-out;
 }
 
-.animate-slide-left {
+.slide-in-left {
     animation: slideInLeft 0.8s ease-out;
 }
 
-.animate-slide-right {
+.slide-in-right {
     animation: slideInRight 0.8s ease-out;
 }
 
-/* Efectos especiales */
-.parallax-element {
-    transform: translateZ(0);
-    will-change: transform;
+/* Loading skeleton - heredado del patrón sabores */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
 }
 
-.hover-glow:hover {
-    box-shadow: 0 0 20px rgba(218, 165, 32, 0.4);
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
 }
 
-.text-gradient {
-    background: linear-gradient(45deg, var(--craft-gold), var(--food-spice));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* Botones personalizados */
-.btn-ubicacion {
-    background: linear-gradient(45deg, var(--craft-gold), var(--food-spice));
-    border: none;
-    color: white;
-    padding: 0.75rem 2rem;
-    border-radius: 25px;
-    font-weight: bold;
-    transition: var(--transition-medium);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.btn-ubicacion:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-medium);
-    color: white;
-}
-
-/* Responsive Design */
+/* Responsive - heredado del patrón sabores */
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2.5rem;
@@ -629,33 +720,30 @@ body {
         font-size: 1.1rem;
     }
     
-    .section-title {
-        font-size: 2rem;
-    }
-    
-    .geo-info-section {
+    .hero-content {
         padding: 2rem;
+        margin: 1rem;
     }
     
-    .geo-card {
-        padding: 1.5rem;
+    .filter-buttons {
+        justify-content: center;
     }
     
-    .map-container {
-        padding: 1rem;
+    .filter-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .sabor-card {
+        margin-bottom: 2rem;
+    }
+    
+    .card-image-container {
+        height: 200px;
     }
     
     .map-frame iframe {
         height: 300px;
-    }
-    
-    .poi-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-    
-    .weather-section {
-        padding: 2rem;
     }
     
     .weather-title {
@@ -669,15 +757,6 @@ body {
     .weather-details {
         grid-template-columns: repeat(2, 1fr);
     }
-    
-    .navbar-custom .nav-link {
-        margin: 0.2rem 0;
-        text-align: center;
-    }
-    
-    .hero-content {
-        padding: 1rem;
-    }
 }
 
 @media (max-width: 576px) {
@@ -685,37 +764,24 @@ body {
         font-size: 2rem;
     }
     
-    .hero-subtitle {
-        font-size: 1rem;
+    .sabores-hero {
+        min-height: 50vh;
     }
     
-    .section-title {
-        font-size: 1.8rem;
-    }
-    
-    .geo-info-section {
+    .card-body {
         padding: 1.5rem;
     }
     
-    .geo-card {
-        padding: 1rem;
-        margin-bottom: 1rem;
+    .info-section {
+        padding: 3rem 0;
     }
     
     .map-frame iframe {
         height: 250px;
     }
     
-    .poi-image {
-        height: 150px;
-    }
-    
-    .poi-content {
-        padding: 1rem;
-    }
-    
     .weather-section {
-        padding: 1.5rem;
+        padding: 2rem 0;
     }
     
     .weather-temp {
@@ -725,70 +791,65 @@ body {
     .weather-details {
         grid-template-columns: 1fr;
     }
-    
-    .main-content {
-        padding: 2rem 0;
-    }
 }
 
-/* Elementos decorativos */
-.decorative-border {
-    border: 3px solid;
-    border-image: linear-gradient(45deg, var(--craft-gold), var(--food-spice), var(--craft-accent)) 1;
-    border-radius: 10px;
+/* Efectos especiales - heredados del patrón sabores */
+.sparkle {
+    position: relative;
+    overflow: hidden;
 }
 
-.location-pattern {
-    background-image: 
-        radial-gradient(circle at 25% 25%, var(--map-primary) 2px, transparent 2px),
-        radial-gradient(circle at 75% 75%, var(--map-secondary) 2px, transparent 2px);
-    background-size: 50px 50px;
-    opacity: 0.1;
+.sparkle::before {
+    content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: sparkle 3s linear infinite;
     pointer-events: none;
 }
 
-/* Estilos para coordenadas */
-.coordinates {
-    font-family: 'Courier New', monospace;
-    background: rgba(74, 144, 226, 0.1);
-    padding: 0.25rem 0.5rem;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    color: var(--map-primary);
-    font-weight: bold;
+@keyframes sparkle {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(0deg);
+    }
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(360deg);
+    }
 }
 
-/* Indicadores de estado */
-.status-indicator {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
+/* Botón de scroll to top - heredado del patrón sabores */
+.scroll-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: var(--color-white);
+    border: none;
     border-radius: 50%;
-    margin-right: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
 }
 
-.status-online {
-    background: var(--map-secondary);
-    box-shadow: 0 0 10px var(--map-secondary);
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
 }
 
-.status-loading {
-    background: var(--weather-orange);
-    animation: pulse 1.5s infinite;
-}
-
-.status-error {
-    background: #e74c3c;
-}
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
+.scroll-to-top:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
 }
 

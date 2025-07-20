@@ -148,10 +148,10 @@ $eventos_ejemplo = [
                 </ul>
                 <div class="d-flex">
                     <select class="form-select" id="language-selector">
-                        <option value="es" <?php if($lang_code == 'es') echo 'selected'; ?>>
+                        <option value="es">
                             🇪🇸 Español
                         </option>
-                        <option value="qu" <?php if($lang_code == 'qu') echo 'selected'; ?>>
+                        <option value="qu">
                             🏔️ Kichwa
                         </option>
                     </select>
@@ -166,9 +166,9 @@ $eventos_ejemplo = [
             <div class="hero-content">
                 <h1 class="hero-title">
                     <i class="fas fa-theater-masks"></i>
-                    Cultura de Imbabura
+                    <span data-translate="cultura_hero_titulo">Cultura de Imbabura</span>
                 </h1>
-                <p class="hero-subtitle">
+                <p class="hero-subtitle" data-translate="cultura_hero_subtitulo">
                     Descubre el arte ancestral de nuestros maestros artesanos, donde cada pieza cuenta una historia milenaria de tradición y cultura en el corazón de los Andes ecuatorianos.
                 </p>
             </div>
@@ -181,27 +181,27 @@ $eventos_ejemplo = [
             <div class="filter-buttons">
                 <button class="filter-btn active" data-filter="all">
                     <i class="fas fa-th"></i>
-                    Todos
+                    <span data-translate="todos">Todos</span>
                 </button>
                 <button class="filter-btn" data-filter="festival">
                     <i class="fas fa-star"></i>
-                    Festivales
+                    <span data-translate="festivales">Festivales</span>
                 </button>
                 <button class="filter-btn" data-filter="religious">
                     <i class="fas fa-church"></i>
-                    Religiosos
+                    <span data-translate="religiosos">Religiosos</span>
                 </button>
                 <button class="filter-btn" data-filter="agricultural">
                     <i class="fas fa-leaf"></i>
-                    Agrícolas
+                    <span data-translate="agricolas">Agrícolas</span>
                 </button>
                 <button class="filter-btn" data-filter="traditional">
                     <i class="fas fa-heart"></i>
-                    Tradicionales
+                    <span data-translate="tradicionales">Tradicionales</span>
                 </button>
                 <button class="filter-btn" data-filter="musical">
                     <i class="fas fa-music"></i>
-                    Musicales
+                    <span data-translate="musicales">Musicales</span>
                 </button>
             </div>
         </div>
@@ -332,8 +332,8 @@ $eventos_ejemplo = [
     <!-- Sección de Videos del Inti Raymi -->
     <section class="video-gallery">
         <div class="container">
-            <h2 class="section-title">Videos del Inti Raymi</h2>
-            <p class="text-center mb-4 lead">
+            <h2 class="section-title" data-translate="videos_del_inti_raymi">Videos del Inti Raymi</h2>
+            <p class="text-center mb-4 lead" data-translate="videos_del_inti_raymi_descripcion">
                 El Inti Raymi, o Fiesta del Sol, es una de las celebraciones más importantes de la cultura andina. Aquí puedes ver cómo se vive esta tradición milenaria en Caranqui, Imbabura.
             </p>
             
@@ -342,7 +342,7 @@ $eventos_ejemplo = [
                     <div class="video-container">
                         <h5 class="text-center mb-3">
                             <i class="fas fa-play-circle text-gradient me-2"></i>
-                            Inti Raymi Caranqui
+                            <span data-translate="inti_raymi_caranqui">Inti Raymi Caranqui</span>
                         </h5>
                         <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@joncarlosama/video/7516340227372272902" data-video-id="7516340227372272902" style="max-width: 605px;min-width: 325px;">
                             <section>
@@ -478,7 +478,8 @@ $eventos_ejemplo = [
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script async src="https://www.tiktok.com/embed.js"></script>
-
+    <script src="js/ultra-translation-system.js"></script>
+    <script src="js/ultra-translation-test.js"></script>
     <script src="js/cultura.js"></script>
     <script src="js/script.js"></script>
 </body>

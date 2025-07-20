@@ -73,10 +73,10 @@
                 </ul>
                 <div class="d-flex">
                     <select class="form-select" id="language-selector">
-                        <option value="es" <?php if($lang_code == 'es') echo 'selected'; ?>>
+                        <option value="es">
                             🇪🇸 Español
                         </option>
-                        <option value="qu" <?php if($lang_code == 'qu') echo 'selected'; ?>>
+                        <option value="qu">
                             🏔️ Kichwa
                         </option>
                     </select>
@@ -93,7 +93,7 @@
                 <p class="hero-subtitle"><?php echo $texto['subtitulo_inicio']; ?></p>
                 <a href="#features" class="hero-btn">
                     <i class="fas fa-compass"></i>
-                    Explorar Cultura
+                    <span data-translate="explorar_cultura">Explorar Cultura</span>
                 </a>
             </div>
         </div>
@@ -102,15 +102,15 @@
     <!-- Sección de características principales -->
     <section id="features" class="features-section">
         <div class="container">
-            <h2 class="section-title">Descubre Nuestras Tradiciones</h2>
+            <h2 class="section-title" data-translate="descubre_tradiciones">Descubre Nuestras Tradiciones</h2>
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-utensils"></i>
                         </div>
-                        <h3 class="feature-title">Sabores Únicos</h3>
-                        <p class="feature-description">
+                        <h3 class="feature-title" data-translate="sabores_unicos">Sabores Únicos</h3>
+                        <p class="feature-description" data-translate="sabores_descripcion">
                             Explora la rica gastronomía andina con ingredientes ancestrales y recetas tradicionales que han pasado de generación en generación.
                         </p>
                     </div>
@@ -120,8 +120,8 @@
                         <div class="feature-icon">
                             <i class="fas fa-palette"></i>
                         </div>
-                        <h3 class="feature-title">Artesanías</h3>
-                        <p class="feature-description">
+                        <h3 class="feature-title" data-translate="artesanias">Artesanías</h3>
+                        <p class="feature-description" data-translate="artesanias_descripcion">
                             Descubre el arte textil, cerámico y de orfebrería que refleja la cosmovisión y habilidades ancestrales de nuestros pueblos.
                         </p>
                     </div>
@@ -131,8 +131,8 @@
                         <div class="feature-icon">
                             <i class="fas fa-language"></i>
                         </div>
-                        <h3 class="feature-title">Idioma Kichwa</h3>
-                        <p class="feature-description">
+                        <h3 class="feature-title" data-translate="idioma_kichwa">Idioma Kichwa</h3>
+                        <p class="feature-description" data-translate="idioma_kichwa_descripcion">
                             Aprende sobre la lengua ancestral que conecta a millones de personas en los Andes y preserva nuestra identidad cultural.
                         </p>
                     </div>
@@ -142,8 +142,8 @@
                         <div class="feature-icon">
                             <i class="fas fa-mountain"></i>
                         </div>
-                        <h3 class="feature-title">Paisajes</h3>
-                        <p class="feature-description">
+                        <h3 class="feature-title" data-translate="paisajes">Paisajes</h3>
+                        <p class="feature-description" data-translate="paisajes_descripcion">
                             Conoce los majestuosos paisajes andinos que han moldeado nuestra cultura y forma de vida durante milenios.
                         </p>
                     </div>
@@ -277,6 +277,8 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="js/ultra-translation-system.js"></script>
+    <script src="js/ultra-translation-test.js"></script>
     <script src="js/index.js"></script>
 </body>
 </html>

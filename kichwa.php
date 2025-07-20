@@ -84,10 +84,10 @@ $stmt = $kichwa->read();
                 </ul>
                 <div class="d-flex">
                     <select class="form-select" id="language-selector">
-                        <option value="es" <?php if($lang_code == 'es') echo 'selected'; ?>>
+                        <option value="es">
                             🇪🇸 Español
                         </option>
-                        <option value="qu" <?php if($lang_code == 'qu') echo 'selected'; ?>>
+                        <option value="qu">
                             🏔️ Kichwa
                         </option>
                     </select>
@@ -408,6 +408,8 @@ $stmt = $kichwa->read();
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="js/ultra-translation-system.js"></script>
+    <script src="js/ultra-translation-test.js"></script>
     <script src="js/kichwa.js"></script>
     <script src="js/script.js"></script>
 </body>

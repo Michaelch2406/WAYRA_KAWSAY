@@ -55,10 +55,10 @@ include_once dirname(__DIR__, 3) .
             </ul>
             <div class="d-flex">
                 <select class="form-select" id="language-selector">
-                    <option value="es" <?php if($lang_code == "es") echo "selected"; ?>>
+                    <option value="es">
                         🇪🇸 Español
                     </option>
-                    <option value="qu" <?php if($lang_code == "qu") echo "selected"; ?>>
+                    <option value="qu">
                         🏔️ Kichwa
                     </option>
                 </select>

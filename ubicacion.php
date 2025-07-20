@@ -85,12 +85,12 @@
                 </ul>
                 
                 <div class="d-flex align-items-center">
-                    <select class="form-select me-2" id="language-selector" onchange="changeLanguage(this.value)">
-                        <option value="es" <?php if($lang_code == 'es') echo 'selected'; ?>>
-                            <i class="fas fa-flag"></i> Español
+                    <select class="form-select" id="language-selector">
+                        <option value="es">
+                            🇪🇸 Español
                         </option>
-                        <option value="qu" <?php if($lang_code == 'qu') echo 'selected'; ?>>
-                            <i class="fas fa-flag"></i> Kichwa
+                        <option value="qu">
+                            🏔️ Kichwa
                         </option>
                     </select>
                 </div>
@@ -104,14 +104,14 @@
         <div class="hero-content">
             <h1 class="hero-title">
                 <i class="fas fa-map-marker-alt me-3"></i>
-                Ubicación de Imbabura
+                <span data-translate="ubicacion_hero_titulo">Ubicación de Imbabura</span>
             </h1>
-            <p class="hero-subtitle">
+            <p class="hero-subtitle" data-translate="ubicacion_hero_subtitulo">
                 Descubre la ubicación privilegiada de Imbabura en el corazón de los Andes ecuatorianos, donde se encuentran Ibarra, Naranjito y los más hermosos paisajes naturales del norte de Ecuador.
             </p>
             <button class="btn btn-ubicacion" onclick="smoothScrollTo('contenido-principal')">
                 <i class="fas fa-arrow-down me-2"></i>
-                Explorar Ubicación
+                <span data-translate="explorar_ubicacion">Explorar Ubicación</span>
             </button>
         </div>
     </section>
@@ -124,7 +124,7 @@
             <section class="geo-info-section">
                 <h2 class="section-title">
                     <i class="fas fa-globe-americas text-gradient me-2"></i>
-                    Información Geográfica
+                    <span data-translate="informacion_geografica">Información Geográfica</span>
                 </h2>
                 
                 <div class="row">
@@ -133,12 +133,12 @@
                             <div class="icon">
                                 <i class="fas fa-map-marked-alt"></i>
                             </div>
-                            <h4>Provincia de Imbabura</h4>
-                            <p><strong>País:</strong> Ecuador</p>
-                            <p><strong>Región:</strong> Sierra Norte</p>
-                            <p><strong>Capital:</strong> Ibarra</p>
-                            <p><strong>Superficie:</strong> 4,599 km²</p>
-                            <p><strong>Población:</strong> ~476,257 habitantes</p>
+                            <h4 data-translate="provincia_de_imbabura">Provincia de Imbabura</h4>
+                            <p><strong data-translate="pais">País:</strong> Ecuador</p>
+                            <p><strong data-translate="region">Región:</strong> Sierra Norte</p>
+                            <p><strong data-translate="capital">Capital:</strong> Ibarra</p>
+                            <p><strong data-translate="superficie">Superficie:</strong> 4,599 km²</p>
+                            <p><strong data-translate="poblacion">Población:</strong> ~476,257 habitantes</p>
                             <p class="coordinates">0°20'N, 78°07'W</p>
                         </div>
                     </div>
@@ -444,6 +444,8 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="js/ultra-translation-system.js"></script>
+    <script src="js/ultra-translation-test.js"></script>
     <script src="js/script.js"></script>
     <script src="js/ubicacion.js"></script>
     

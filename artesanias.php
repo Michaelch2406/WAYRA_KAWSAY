@@ -148,10 +148,10 @@ $artesanos_ejemplo = [
                 </ul>
                 <div class="d-flex">
                     <select class="form-select" id="language-selector">
-                        <option value="es" <?php if($lang_code == 'es') echo 'selected'; ?>>
+                        <option value="es">
                             🇪🇸 Español
                         </option>
-                        <option value="qu" <?php if($lang_code == 'qu') echo 'selected'; ?>>
+                        <option value="qu">
                             🏔️ Kichwa
                         </option>
                     </select>
@@ -168,7 +168,7 @@ $artesanos_ejemplo = [
                     <i class="fas fa-palette"></i>
                     <?php echo $texto['menu_artesanias']; ?>
                 </h1>
-                <p class="hero-subtitle">
+                <p class="hero-subtitle" data-translate="artesanias_hero_subtitulo">
                     Descubre el arte ancestral de nuestros maestros artesanos, donde cada pieza cuenta una historia milenaria de tradición y cultura.
                 </p>
             </div>
@@ -181,27 +181,27 @@ $artesanos_ejemplo = [
             <div class="category-buttons">
                 <button class="category-btn active" data-filter="all">
                     <i class="fas fa-th"></i>
-                    Todos
+                    <span data-translate="todos">Todos</span>
                 </button>
                 <button class="category-btn" data-filter="textiles">
                     <i class="fas fa-tshirt"></i>
-                    Textiles
+                    <span data-translate="textiles">Textiles</span>
                 </button>
                 <button class="category-btn" data-filter="ceramica">
                     <i class="fas fa-wine-glass"></i>
-                    Cerámica
+                    <span data-translate="ceramica">Cerámica</span>
                 </button>
                 <button class="category-btn" data-filter="orfebreria">
                     <i class="fas fa-gem"></i>
-                    Orfebrería
+                    <span data-translate="orfebreria">Orfebrería</span>
                 </button>
                 <button class="category-btn" data-filter="madera">
                     <i class="fas fa-tree"></i>
-                    Madera
+                    <span data-translate="madera">Madera</span>
                 </button>
                 <button class="category-btn" data-filter="cuero">
                     <i class="fas fa-shoe-prints"></i>
-                    Cuero
+                    <span data-translate="cuero">Cuero</span>
                 </button>
             </div>
         </div>
@@ -210,7 +210,7 @@ $artesanos_ejemplo = [
     <!-- Sección de artesanos -->
     <section class="artesanos-section">
         <div class="container">
-            <h2 class="section-title">Nuestros Maestros Artesanos</h2>
+            <h2 class="section-title" data-translate="nuestros_maestros_artesanos">Nuestros Maestros Artesanos</h2>
             
             <?php 
             // Intentar obtener datos de la base de datos
@@ -225,7 +225,7 @@ $artesanos_ejemplo = [
                             <div class="artesano-info">
                                 <h3><?php echo $row_artesano['nombre']; ?></h3>
                                 <p><?php echo $row_artesano['descripcion']; ?></p>
-                                <span class="artesano-specialty">Especialista en Artesanías</span>
+                                <span class="artesano-specialty" data-translate="especialista_en_artesanias">Especialista en Artesanías</span>
                             </div>
                         </div>
                         
@@ -433,6 +433,8 @@ $artesanos_ejemplo = [
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="js/ultra-translation-system.js"></script>
+    <script src="js/ultra-translation-test.js"></script>
     <script src="js/artesanias.js"></script>
 </body>
 </html>

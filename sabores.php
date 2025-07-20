@@ -148,10 +148,10 @@ $sabores_ejemplo = [
                 </ul>
                 <div class="d-flex">
                     <select class="form-select" id="language-selector">
-                        <option value="es" <?php if($lang_code == 'es') echo 'selected'; ?>>
+                        <option value="es">
                             🇪🇸 Español
                         </option>
-                        <option value="qu" <?php if($lang_code == 'qu') echo 'selected'; ?>>
+                        <option value="qu">
                             🏔️ Kichwa
                         </option>
                     </select>
@@ -168,7 +168,7 @@ $sabores_ejemplo = [
                     <i class="fas fa-utensils"></i>
                     <?php echo $texto['menu_sabores']; ?>
                 </h1>
-                <p class="hero-subtitle">
+                <p class="hero-subtitle" data-translate="sabores_hero_subtitulo">
                     Descubre los sabores únicos de la gastronomía andina, donde cada plato cuenta una historia milenaria de tradición y cultura.
                 </p>
             </div>
@@ -181,31 +181,31 @@ $sabores_ejemplo = [
             <div class="filter-buttons">
                 <button class="filter-btn active" data-filter="all">
                     <i class="fas fa-th"></i>
-                    Todos
+                    <span data-translate="todos">Todos</span>
                 </button>
                 <button class="filter-btn" data-filter="tradicional">
                     <i class="fas fa-fire"></i>
-                    Tradicionales
+                    <span data-translate="tradicionales">Tradicionales</span>
                 </button>
                 <button class="filter-btn" data-filter="carnes">
                     <i class="fas fa-drumstick-bite"></i>
-                    Carnes
+                    <span data-translate="carnes">Carnes</span>
                 </button>
                 <button class="filter-btn" data-filter="sopas">
                     <i class="fas fa-bowl-food"></i>
-                    Sopas
+                    <span data-translate="sopas">Sopas</span>
                 </button>
                 <button class="filter-btn" data-filter="vegetariano">
                     <i class="fas fa-leaf"></i>
-                    Vegetariano
+                    <span data-translate="vegetariano">Vegetariano</span>
                 </button>
                 <button class="filter-btn" data-filter="bebidas">
                     <i class="fas fa-glass-water"></i>
-                    Bebidas
+                    <span data-translate="bebidas">Bebidas</span>
                 </button>
                 <button class="filter-btn" data-filter="postres">
                     <i class="fas fa-cake-candles"></i>
-                    Postres
+                    <span data-translate="postres">Postres</span>
                 </button>
             </div>
         </div>
@@ -326,15 +326,15 @@ $sabores_ejemplo = [
     <!-- Sección de información adicional -->
     <section class="info-section">
         <div class="container">
-            <h2 class="section-title">Nuestra Gastronomía</h2>
+            <h2 class="section-title" data-translate="nuestra_gastronomia">Nuestra Gastronomía</h2>
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
                     <div class="info-card">
                         <div class="info-icon">
                             <i class="fas fa-seedling"></i>
                         </div>
-                        <h3 class="info-title">Ingredientes Ancestrales</h3>
-                        <p class="info-description">
+                        <h3 class="info-title" data-translate="ingredientes_ancestrales">Ingredientes Ancestrales</h3>
+                        <p class="info-description" data-translate="ingredientes_ancestrales_descripcion">
                             Utilizamos ingredientes nativos como quinoa, papa, maíz y hierbas aromáticas que han alimentado a nuestros pueblos durante milenios.
                         </p>
                     </div>
@@ -344,8 +344,8 @@ $sabores_ejemplo = [
                         <div class="info-icon">
                             <i class="fas fa-fire"></i>
                         </div>
-                        <h3 class="info-title">Técnicas Tradicionales</h3>
-                        <p class="info-description">
+                        <h3 class="info-title" data-translate="tecnicas_tradicionales">Técnicas Tradicionales</h3>
+                        <p class="info-description" data-translate="tecnicas_tradicionales_descripcion">
                             Preservamos métodos de cocción ancestrales como la pachamanca, el uso de piedras calientes y la fermentación natural.
                         </p>
                     </div>
@@ -355,8 +355,8 @@ $sabores_ejemplo = [
                         <div class="info-icon">
                             <i class="fas fa-heart"></i>
                         </div>
-                        <h3 class="info-title">Cocina del Alma</h3>
-                        <p class="info-description">
+                        <h3 class="info-title" data-translate="cocina_del_alma">Cocina del Alma</h3>
+                        <p class="info-description" data-translate="cocina_del_alma_descripcion">
                             Cada plato está preparado con amor y respeto por la Pachamama, transmitiendo la esencia de nuestra cultura en cada bocado.
                         </p>
                     </div>
@@ -411,6 +411,8 @@ $sabores_ejemplo = [
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="js/ultra-translation-system.js"></script>
+    <script src="js/ultra-translation-test.js"></script>
     <script src="js/sabores.js"></script>
 </body>
 </html>

@@ -1,13 +1,9 @@
 <?php
 include_once 'config/global.php';
 include_once 'config/Conexion.php';
-include_once 'models/Ubicacion.php';
 
 $database = new Conexion();
 $db = $database->getConnection();
-
-$ubicacion = new Ubicacion($db);
-$stmt = $ubicacion->read();
 
 // Datos de ejemplo para demostración (en caso de que no haya datos en la BD)
 $ubicaciones_ejemplo = [
@@ -219,59 +215,7 @@ $ubicaciones_ejemplo = [
     <section class="sabores-grid">
         <div class="container">
             <div class="row g-4">
-                <?php 
-                // Intentar obtener datos de la base de datos
-                $has_db_data = false;
-                if ($stmt) {
-                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $has_db_data = true;
-                        ?>
-                        <div class="col-lg-4 col-md-6">
-                            <div class="sabor-card" data-category="<?php echo isset($row['categoria']) ? $row['categoria'] : 'natural'; ?>">
-                                <div class="card-image-container">
-                                    <img src="images/<?php echo $row['imagen']; ?>" alt="<?php echo $row['nombre']; ?>" loading="lazy">
-                                    <div class="card-overlay">
-                                        <div class="overlay-content">
-                                            <i class="fas fa-map fa-2x"></i>
-                                            <p>Ver en mapa</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <h3 class="card-title"><?php echo $row['nombre']; ?></h3>
-                                    <p class="card-description"><?php echo $row['descripcion']; ?></p>
-                                    
-                                    <div class="card-tags">
-                                        <span class="tag">Imbabura</span>
-                                        <span class="tag">Ecuador</span>
-                                    </div>
-                                    
-                                    <div class="card-rating">
-                                        <div class="coordinates">
-                                            <i class="fas fa-map-pin"></i>
-                                            <span><?php echo isset($row['latitud']) ? $row['latitud'] : '0.0000'; ?>°N, <?php echo isset($row['longitud']) ? $row['longitud'] : '0.0000'; ?>°W</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="card-footer">
-                                        <div class="difficulty">
-                                            <span>Altitud:</span>
-                                            <div class="altitude-badge"><?php echo isset($row['altitud']) ? $row['altitud'] : '2000 m'; ?></div>
-                                        </div>
-                                        <div class="prep-time">
-                                            <i class="fas fa-tag"></i>
-                                            <?php echo isset($row['tipo']) ? $row['tipo'] : 'Lugar'; ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
-                    }
-                }
-                
-                // Si no hay datos de la BD, usar datos de ejemplo
-                if (!$has_db_data) {
+                <?php
                     foreach ($ubicaciones_ejemplo as $ubicacion) {
                         ?>
                         <div class="col-lg-4 col-md-6">
@@ -321,7 +265,6 @@ $ubicaciones_ejemplo = [
                         </div>
                         <?php
                     }
-                }
                 ?>
             </div>
         </div>

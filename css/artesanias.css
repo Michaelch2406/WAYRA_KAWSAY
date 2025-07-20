@@ -213,7 +213,7 @@ body {
 }
 
 .artesano-card:hover::before {
-    opacity: 0.05;
+    opacity: 0;
 }
 
 .artesano-header {

@@ -17,21 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Kichwa page initialized with sabores pattern - Imbabura, Ecuador');
 });
 
-// Selector de idioma (heredado del patrón de sabores)
-function initLanguageSelector() {
-    const languageSelector = document.getElementById('language-selector');
-    
-    if (languageSelector) {
-        languageSelector.addEventListener('change', function() {
-            const selectedLang = this.value;
-            showLoadingIndicator();
-            
-            setTimeout(() => {
-                window.location.href = `kichwa.php?lang=${selectedLang}`;
-            }, 500);
-        });
-    }
-}
 
 // Efectos de scroll (heredado del patrón de sabores)
 function initScrollEffects() {
@@ -48,13 +33,6 @@ function initScrollEffects() {
         } else {
             navbar.style.backgroundColor = '';
             navbar.style.backdropFilter = '';
-        }
-        
-        // Ocultar/mostrar navbar en scroll
-        if (scrollTop > lastScrollTop && scrollTop > 200) {
-            navbar.style.transform = 'translateY(-100%)';
-        } else {
-            navbar.style.transform = 'translateY(0)';
         }
         
         lastScrollTop = scrollTop;

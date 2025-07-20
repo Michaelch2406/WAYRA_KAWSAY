@@ -15,24 +15,13 @@ document.addEventListener('DOMContentLoaded', function() {
     initFilterAnimations();
 });
 
-// Selector de idioma (heredado del index)
-function initLanguageSelector() {
-    const languageSelector = document.getElementById('language-selector');
-    
-    if (languageSelector) {
-        languageSelector.addEventListener('change', function() {
-            const selectedLang = this.value;
-            showLoadingIndicator();
-            
-            setTimeout(() => {
-                window.location.href = `artesanias.php?lang=${selectedLang}`;
-            }, 500);
-        });
-    }
-}
 
 // Efectos de scroll
 function initScrollEffects() {
+    if (!document.querySelector('.artesanias-hero')) {
+        return;
+    }
+
     const navbar = document.querySelector('.navbar');
     let lastScrollTop = 0;
     
@@ -46,13 +35,6 @@ function initScrollEffects() {
         } else {
             navbar.style.backgroundColor = '';
             navbar.style.backdropFilter = '';
-        }
-        
-        // Ocultar/mostrar navbar en scroll
-        if (scrollTop > lastScrollTop && scrollTop > 200) {
-            navbar.style.transform = 'translateY(-100%)';
-        } else {
-            navbar.style.transform = 'translateY(0)';
         }
         
         lastScrollTop = scrollTop;

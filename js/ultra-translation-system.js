@@ -21,6 +21,7 @@ class UltraWayraTranslationSystem {
         this.observers = [];
         this.storageKey = 'wayra_kawsay_language';
         this.processedElements = new WeakSet();
+        this.originalContent = new Map(); // Guardar contenido original en español
         this.translationQueue = [];
         this.isTranslating = false;
         
@@ -63,6 +64,7 @@ class UltraWayraTranslationSystem {
             this.setupUltraDOMObserver();
             this.buildUltraMappings();
             this.setupInstantTranslation();
+            this.saveOriginalContent(); // Guardar contenido original ANTES de cualquier traducción
             await this.performUltraTranslation();
             this.bindUltraEvents();
             
@@ -348,8 +350,14 @@ class UltraWayraTranslationSystem {
         this.processedElements = new WeakSet();
         this.cache.clear();
         
-        // Traducción ULTRA-RÁPIDA con prioridad en elementos visibles
-        await this.performUltraFastTranslation();
+        // COMPORTAMIENTO DIFERENTE según idioma
+        if (langCode === 'es') {
+            // ESPAÑOL: Solo restaurar contenido original, NO traducir
+            this.restoreOriginalContent();
+        } else {
+            // KICHWA: Traducir normalmente
+            await this.performUltraFastTranslation();
+        }
         
         // Evento de cambio completado
         this.dispatchLanguageChangeEvent(langCode);
@@ -371,80 +379,55 @@ class UltraWayraTranslationSystem {
     }
 
     /**
-     * Traducción ultra-rápida con priorización
+     * Traducción ultra-rápida con priorización - SOLO data-translate
      */
     async performUltraFastTranslation() {
-        // Elementos críticos primero (hero, títulos principales)
-        await this.translateCriticalElements();
-        
-        // Elementos visibles segundo
-        await this.translateVisibleElements();
-        
-        // Resto de elementos con delay mínimo para no bloquear UI
-        setTimeout(() => this.translateRemainingElements(), 0);
+        // SOLO traducir elementos con data-translate
+        await this.translateDataTranslateElements();
     }
 
     /**
-     * Traduce elementos críticos primero
+     * Traduce SOLO elementos con data-translate
      */
-    async translateCriticalElements() {
-        const criticalElements = document.querySelectorAll([
-            '.hero-title, .hero-subtitle',
-            'h1, h2.section-title',
-            '.navbar-brand',
-            '#language-selector option',
-            '[data-translate]'
-        ].join(', '));
+    async translateDataTranslateElements() {
+        const elements = document.querySelectorAll('[data-translate]');
+        let translated = 0;
         
-        criticalElements.forEach(element => {
-            this.ultraTranslateElement(element);
+        elements.forEach(element => {
+            const key = element.getAttribute('data-translate');
+            const translation = this.translations[this.currentLanguage]?.[key];
+            
+            if (translation) {
+                // Preservar iconos si los hay
+                const icon = element.querySelector('i.fas, i.fab, i.far, i.fal');
+                
+                if (icon) {
+                    const iconHTML = icon.outerHTML;
+                    element.innerHTML = iconHTML + ' ' + translation;
+                } else {
+                    element.textContent = translation;
+                }
+                translated++;
+            }
         });
         
-        console.log(`⚡ ${criticalElements.length} elementos críticos traducidos`);
+        console.log(`⚡ ${translated} elementos data-translate traducidos a ${this.currentLanguage}`);
     }
 
     /**
-     * Traduce elementos visibles en viewport
+     * DESHABILITADO - No traducir elementos automáticamente
      */
     async translateVisibleElements() {
-        const allElements = document.querySelectorAll(this.criticalSelectors.join(', '));
-        
-        allElements.forEach(element => {
-            if (this.isElementVisible(element)) {
-                this.ultraTranslateElement(element);
-            }
-        });
+        // DESHABILITADO para evitar traducir elementos sin data-translate
+        console.log('🛡️ translateVisibleElements DESHABILITADO');
     }
 
     /**
-     * Traduce elementos restantes
+     * DESHABILITADO - No traducir elementos automáticamente
      */
     translateRemainingElements() {
-        const walker = document.createTreeWalker(
-            document.body,
-            NodeFilter.SHOW_TEXT,
-            node => {
-                const parent = node.parentElement;
-                if (!parent) return NodeFilter.FILTER_REJECT;
-                
-                const tagName = parent.tagName.toLowerCase();
-                if (['script', 'style', 'noscript'].includes(tagName)) {
-                    return NodeFilter.FILTER_REJECT;
-                }
-                
-                const text = node.textContent.trim();
-                return text.length > 1 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-            }
-        );
-
-        const textNodes = [];
-        let node;
-        while (node = walker.nextNode()) {
-            textNodes.push(node);
-        }
-
-        // Procesar en chunks pequeños para no bloquear UI
-        this.processTextNodesInChunks(textNodes);
+        // DESHABILITADO para evitar traducir elementos sin data-translate
+        console.log('🛡️ translateRemainingElements DESHABILITADO');
     }
 
     /**
@@ -491,38 +474,24 @@ class UltraWayraTranslationSystem {
     }
 
     /**
-     * Traducción ultra-rápida de elemento individual
+     * Traducción ultra-rápida SOLO para elementos data-translate
      */
     ultraTranslateElement(element) {
         if (!element || this.processedElements.has(element)) return;
         
-        // Traducir texto principal
-        if (element.textContent) {
-            const originalText = element.textContent.trim();
-            if (originalText.length > 0) {
-                const translation = this.ultraTranslateText(originalText);
-                if (translation && translation !== originalText) {
-                    element.textContent = translation;
-                }
-            }
-        }
-        
-        // Traducir atributos críticos
-        ['placeholder', 'title', 'alt'].forEach(attr => {
-            const value = element.getAttribute(attr);
-            if (value) {
-                const translation = this.ultraTranslateText(value);
-                if (translation && translation !== value) {
-                    element.setAttribute(attr, translation);
-                }
-            }
-        });
-        
-        // Traducir por data-translate
+        // SOLO procesar elementos con data-translate
         const translateKey = element.getAttribute('data-translate');
-        if (translateKey) {
-            const translation = this.getUltraTranslation(translateKey);
-            if (translation) {
+        if (!translateKey) return;
+        
+        const translation = this.getUltraTranslation(translateKey);
+        if (translation) {
+            // Preservar iconos si los hay
+            const icon = element.querySelector('i.fas, i.fab, i.far, i.fal');
+            
+            if (icon) {
+                const iconHTML = icon.outerHTML;
+                element.innerHTML = iconHTML + ' ' + translation;
+            } else {
                 element.textContent = translation;
             }
         }
@@ -657,6 +626,77 @@ class UltraWayraTranslationSystem {
         this.cache.set(cacheKey, translation);
         
         return translation;
+    }
+
+    /**
+     * Guarda el contenido original en español
+     */
+    saveOriginalContent() {
+        console.log('💾 Guardando contenido original en español...');
+        
+        // Guardar elementos con data-translate
+        const elements = document.querySelectorAll('[data-translate]');
+        elements.forEach(element => {
+            const key = element.getAttribute('data-translate');
+            if (key && !this.originalContent.has(key)) {
+                this.originalContent.set(key, {
+                    text: element.textContent.trim(),
+                    html: element.innerHTML
+                });
+            }
+        });
+        
+        // También guardar elementos problemáticos sin data-translate para preservarlos
+        const problematicElements = document.querySelectorAll('h2:not([data-translate]), h5:not([data-translate]), p:not([data-translate])');
+        problematicElements.forEach((element, index) => {
+            const uniqueKey = `preserve_${index}_${element.tagName.toLowerCase()}`;
+            if (!this.originalContent.has(uniqueKey)) {
+                this.originalContent.set(uniqueKey, {
+                    text: element.textContent.trim(),
+                    html: element.innerHTML,
+                    element: element // Guardar referencia directa
+                });
+            }
+        });
+        
+        console.log(`✅ ${this.originalContent.size} elementos originales guardados`);
+    }
+
+    /**
+     * Restaura contenido original en español
+     */
+    restoreOriginalContent() {
+        console.log('🔙 Restaurando contenido original en español...');
+        let restored = 0;
+        
+        // Restaurar elementos con data-translate
+        const elements = document.querySelectorAll('[data-translate]');
+        elements.forEach(element => {
+            const key = element.getAttribute('data-translate');
+            const original = this.originalContent.get(key);
+            
+            if (original) {
+                // Verificar si tiene iconos para preservar estructura
+                const hasIcons = element.querySelector('i.fas, i.fab, i.far, i.fal');
+                
+                if (hasIcons && original.html) {
+                    element.innerHTML = original.html;
+                } else {
+                    element.textContent = original.text;
+                }
+                restored++;
+            }
+        });
+        
+        // Restaurar elementos preservados sin data-translate
+        this.originalContent.forEach((original, key) => {
+            if (key.startsWith('preserve_') && original.element) {
+                original.element.innerHTML = original.html;
+                restored++;
+            }
+        });
+        
+        console.log(`✅ ${restored} elementos restaurados al español original`);
     }
 
     /**

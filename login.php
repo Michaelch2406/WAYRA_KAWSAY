@@ -129,20 +129,62 @@ include_once 'config/global.php';
 
     <div class="container">
         <div class="auth-container">
-            <h2 class="auth-title"><?php echo $texto['bienvenido_de_vuelta']; ?></h2>
-            <form action="controllers/login_controller.php" method="post">
+            <h2 class="auth-title">
+                <i class="fas fa-sign-in-alt"></i>
+                <?php echo $texto['bienvenido_de_vuelta']; ?>
+            </h2>
+            
+            <!-- Alert para mensajes -->
+            <div id="alert-container"></div>
+            
+            <form id="loginForm">
                 <div class="mb-3">
-                    <label for="email" class="form-label"><?php echo $texto['email_usuario']; ?></label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <label for="email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        <?php echo $texto['email_usuario']; ?>
+                    </label>
+                    <input type="email" class="form-control" id="email" name="email" required placeholder="ejemplo@correo.com">
                 </div>
+                
                 <div class="mb-3">
-                    <label for="password" class="form-label"><?php echo $texto['contrasena_usuario']; ?></label>
-                    <input type="password" class="form-control" id="password" name="password" required>
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        <?php echo $texto['contrasena_usuario']; ?>
+                    </label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="password" name="password" required placeholder="Tu contraseña">
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary"><?php echo $texto['iniciar_sesion']; ?></button>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                    <label class="form-check-label" for="remember">
+                        Recordarme
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="btnLogin">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span><?php echo $texto['iniciar_sesion']; ?></span>
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
             </form>
+            
             <div class="text-center mt-3">
-                <p><?php echo $texto['no_tienes_cuenta']; ?> <a href="registro.php"><?php echo $texto['crea_una_aqui']; ?></a></p>
+                <p><?php echo $texto['no_tienes_cuenta']; ?> <a href="registro.php" class="text-decoration-none"><?php echo $texto['crea_una_aqui']; ?></a></p>
+            </div>
+            
+            <!-- Demo credentials info -->
+            <div class="mt-4 p-3 bg-light rounded">
+                <h6 class="text-muted mb-2"><i class="fas fa-info-circle"></i> Cuentas de Prueba:</h6>
+                <small class="text-muted">
+                    <strong>Admin:</strong> admin@wayrakawsay.com / password<br>
+                    <strong>Artesano:</strong> maria.quispe@gmail.com / password<br>
+                    <strong>Comunitario:</strong> jose.tandioy@gmail.com / password
+                </small>
             </div>
         </div>
     </div>
@@ -150,6 +192,41 @@ include_once 'config/global.php';
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h5><i class="fas fa-mountain"></i> <?php echo NOMBRE_PROYECTO; ?></h5>
+                    <p>Preservando y compartiendo la riqueza cultural de los Andes para las futuras generaciones.</p>
+                    <div class="social-links">
+                        <a href="#" class="me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h5>Navegación</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.php">Inicio</a></li>
+                        <li><a href="sabores.php">Sabores</a></li>
+                        <li><a href="artesanias.php">Artesanías</a></li>
+                        <li><a href="kichwa.php">Kichwa</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Cultura</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="cultura.php">Tradiciones</a></li>
+                        <li><a href="ubicacion.php">Ubicación</a></li>
+                        <li><a href="#">Historia</a></li>
+                        <li><a href="#">Festivales</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Contacto</h5>
+                    <p><i class="fas fa-envelope"></i> info@culturaandina.com</p>
+                    <p><i class="fas fa-phone"></i> +593 (0)2 123-4567</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Quito, Ecuador</p>
+                </div>
+            </div>
             <div class="footer-bottom">
                 <p>&copy; 2024 <?php echo NOMBRE_PROYECTO; ?>. <?php echo $texto['pie_pagina']; ?></p>
             </div>
@@ -157,5 +234,94 @@ include_once 'config/global.php';
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/ultra-translation-system.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const btnLogin = document.getElementById('btnLogin');
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+
+            // Handle form submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const spinner = btnLogin.querySelector('.spinner-border');
+                const buttonText = btnLogin.querySelector('span:first-of-type');
+                
+                // Show loading state
+                spinner.classList.remove('d-none');
+                btnLogin.disabled = true;
+                buttonText.textContent = 'Iniciando sesión...';
+                
+                fetch('controllers/AuthController.php?action=login', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('success', data.message);
+                        setTimeout(() => {
+                            window.location.href = data.redirect || 'index.php';
+                        }, 1500);
+                    } else {
+                        showAlert('danger', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('danger', 'Error al procesar la solicitud');
+                })
+                .finally(() => {
+                    // Hide loading state
+                    spinner.classList.add('d-none');
+                    btnLogin.disabled = false;
+                    buttonText.textContent = '<?php echo $texto['iniciar_sesion']; ?>';
+                });
+            });
+
+            function showAlert(type, message) {
+                const alertContainer = document.getElementById('alert-container');
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type} alert-dismissible fade show`;
+                alert.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                alertContainer.innerHTML = '';
+                alertContainer.appendChild(alert);
+                
+                // Auto-hide success alerts
+                if (type === 'success') {
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 3000);
+                }
+            }
+
+            // Demo credentials click handlers
+            document.querySelectorAll('.bg-light small').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'STRONG') {
+                        const text = e.target.nextSibling.textContent.trim();
+                        if (text.includes('/')) {
+                            const [email, password] = text.split(' / ');
+                            document.getElementById('email').value = email;
+                            document.getElementById('password').value = password;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

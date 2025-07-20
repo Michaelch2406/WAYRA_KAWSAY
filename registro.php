@@ -129,24 +129,79 @@ include_once 'config/global.php';
 
     <div class="container">
         <div class="auth-container">
-            <h2 class="auth-title"><?php echo $texto['crear_cuenta']; ?></h2>
-            <form action="controllers/registro_controller.php" method="post">
+            <h2 class="auth-title">
+                <i class="fas fa-user-plus"></i>
+                <?php echo $texto['crear_cuenta']; ?>
+            </h2>
+            
+            <!-- Alert para mensajes -->
+            <div id="alert-container"></div>
+            
+            <form id="registroForm">
                 <div class="mb-3">
-                    <label for="nombre" class="form-label"><?php echo $texto['nombre_usuario']; ?></label>
+                    <label for="nombre" class="form-label">
+                        <i class="fas fa-user"></i>
+                        <?php echo $texto['nombre_usuario']; ?>
+                    </label>
                     <input type="text" class="form-control" id="nombre" name="nombre" required>
                 </div>
+                
                 <div class="mb-3">
-                    <label for="email" class="form-label"><?php echo $texto['email_usuario']; ?></label>
+                    <label for="email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        <?php echo $texto['email_usuario']; ?>
+                    </label>
                     <input type="email" class="form-control" id="email" name="email" required>
                 </div>
+                
                 <div class="mb-3">
-                    <label for="password" class="form-label"><?php echo $texto['contrasena_usuario']; ?></label>
-                    <input type="password" class="form-control" id="password" name="password" required>
+                    <label for="telefono" class="form-label">
+                        <i class="fas fa-phone"></i>
+                        Teléfono (opcional)
+                    </label>
+                    <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="+593 999 999 999">
                 </div>
-                <button type="submit" class="btn btn-primary"><?php echo $texto['registrar']; ?></button>
+                
+                <div class="mb-3">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        <?php echo $texto['contrasena_usuario']; ?>
+                    </label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="password" name="password" required minlength="6">
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-text">La contraseña debe tener al menos 6 caracteres</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="rol" class="form-label">
+                        <i class="fas fa-users"></i>
+                        Tipo de cuenta
+                    </label>
+                    <select class="form-select" id="rol" name="rol" required>
+                        <option value="comunitario">Miembro de la Comunidad</option>
+                        <option value="artesano">Artesano</option>
+                    </select>
+                    <div class="form-text">
+                        <small>
+                            <strong>Miembro de la Comunidad:</strong> Puede crear y gestionar contenido comunitario.<br>
+                            <strong>Artesano:</strong> Puede gestionar productos y perfil artesanal.
+                        </small>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="btnRegistrar">
+                    <i class="fas fa-user-plus"></i>
+                    <span><?php echo $texto['registrar']; ?></span>
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
             </form>
+            
             <div class="text-center mt-3">
-                <p><?php echo $texto['ya_tienes_cuenta']; ?> <a href="login.php"><?php echo $texto['iniciar_sesion']; ?></a></p>
+                <p><?php echo $texto['ya_tienes_cuenta']; ?> <a href="login.php" class="text-decoration-none"><?php echo $texto['iniciar_sesion']; ?></a></p>
             </div>
         </div>
     </div>
@@ -154,6 +209,41 @@ include_once 'config/global.php';
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h5><i class="fas fa-mountain"></i> <?php echo NOMBRE_PROYECTO; ?></h5>
+                    <p>Preservando y compartiendo la riqueza cultural de los Andes para las futuras generaciones.</p>
+                    <div class="social-links">
+                        <a href="#" class="me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h5>Navegación</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.php">Inicio</a></li>
+                        <li><a href="sabores.php">Sabores</a></li>
+                        <li><a href="artesanias.php">Artesanías</a></li>
+                        <li><a href="kichwa.php">Kichwa</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Cultura</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="cultura.php">Tradiciones</a></li>
+                        <li><a href="ubicacion.php">Ubicación</a></li>
+                        <li><a href="#">Historia</a></li>
+                        <li><a href="#">Festivales</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Contacto</h5>
+                    <p><i class="fas fa-envelope"></i> info@culturaandina.com</p>
+                    <p><i class="fas fa-phone"></i> +593 (0)2 123-4567</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Quito, Ecuador</p>
+                </div>
+            </div>
             <div class="footer-bottom">
                 <p>&copy; 2024 <?php echo NOMBRE_PROYECTO; ?>. <?php echo $texto['pie_pagina']; ?></p>
             </div>
@@ -161,5 +251,80 @@ include_once 'config/global.php';
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/ultra-translation-system.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const registroForm = document.getElementById('registroForm');
+            const btnRegistrar = document.getElementById('btnRegistrar');
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+
+            // Handle form submission
+            registroForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const spinner = btnRegistrar.querySelector('.spinner-border');
+                const buttonText = btnRegistrar.querySelector('span:first-of-type');
+                
+                // Show loading state
+                spinner.classList.remove('d-none');
+                btnRegistrar.disabled = true;
+                buttonText.textContent = 'Registrando...';
+                
+                fetch('controllers/AuthController.php?action=registro', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('success', data.message);
+                        setTimeout(() => {
+                            window.location.href = data.redirect || 'login.php';
+                        }, 2000);
+                    } else {
+                        showAlert('danger', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('danger', 'Error al procesar la solicitud');
+                })
+                .finally(() => {
+                    // Hide loading state
+                    spinner.classList.add('d-none');
+                    btnRegistrar.disabled = false;
+                    buttonText.textContent = '<?php echo $texto['registrar']; ?>';
+                });
+            });
+
+            function showAlert(type, message) {
+                const alertContainer = document.getElementById('alert-container');
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type} alert-dismissible fade show`;
+                alert.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                alertContainer.innerHTML = '';
+                alertContainer.appendChild(alert);
+                
+                // Auto-hide success alerts
+                if (type === 'success') {
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 3000);
+                }
+            }
+        });
+    </script>
 </body>
 </html>

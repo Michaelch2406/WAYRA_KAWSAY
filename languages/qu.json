@@ -290,5 +290,20 @@
     
     "_comment_languages": "=== IDIOMAS ===",
     "idioma_espanol": "🇪🇸 Español",
-    "idioma_kichwa_selector": "🏔️ Kichwa"
+    "idioma_kichwa_selector": "🏔️ Kichwa",
+
+    "_comment_auth": "=== AUTHENTICATION ===",
+    "titulo_registro": "Mushuk Yupayta Paskay",
+    "crear_cuenta": "Mushuk Yupayta Paskay",
+    "nombre_usuario": "Suti",
+    "email_usuario": "Chaski",
+    "contrasena_usuario": "Pakalla Rimay",
+    "registrar": "Killkay",
+    "ya_tienes_cuenta": "¿Ña yupayta charinkichu?",
+    "iniciar_sesion": "Yaykuy",
+    "titulo_login": "Yaykuy",
+    "bienvenido_de_vuelta": "Kutinllara shamuy",
+    "no_tienes_cuenta": "¿Manachu yupayta charinki?",
+    "crea_una_aqui": "Kaypi Ruray",
+    "cerrar_sesion": "Llukshiy"
 }

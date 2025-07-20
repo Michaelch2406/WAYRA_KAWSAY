@@ -154,8 +154,8 @@ $ubicaciones_ejemplo = [
                         </a>
                     </li>
                 </ul>
-                <div class="d-flex">
-                    <select class="form-select" id="language-selector">
+                <div class="d-flex align-items-center">
+                    <select class="form-select me-2" id="language-selector" style="width: auto;">
                         <option value="es" <?php if($lang_code == 'es') echo 'selected'; ?>>
                             🇪🇸 Español
                         </option>
@@ -163,6 +163,19 @@ $ubicaciones_ejemplo = [
                             🏔️ Kichwa
                         </option>
                     </select>
+                    <?php if (isset($_SESSION['usuario_id'])): ?>
+                        <div class="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user"></i> <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="logout.php"><?php echo $texto['cerrar_sesion']; ?></a></li>
+                            </ul>
+                        </div>
+                    <?php else: ?>
+                        <a href="login.php" class="btn btn-outline-primary me-2"><?php echo $texto['iniciar_sesion']; ?></a>
+                        <a href="registro.php" class="btn btn-primary"><?php echo $texto['registrar']; ?></a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

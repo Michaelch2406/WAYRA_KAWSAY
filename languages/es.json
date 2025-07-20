@@ -290,5 +290,20 @@
     
     "_comment_languages": "=== IDIOMAS ===",
     "idioma_espanol": "🇪🇸 Español",
-    "idioma_kichwa_selector": "🏔️ Kichwa"
+    "idioma_kichwa_selector": "🏔️ Kichwa",
+
+    "_comment_auth": "=== AUTENTICACIÓN ===",
+    "titulo_registro": "Registro de Usuario",
+    "crear_cuenta": "Crear una Cuenta",
+    "nombre_usuario": "Nombre",
+    "email_usuario": "Correo Electrónico",
+    "contrasena_usuario": "Contraseña",
+    "registrar": "Registrar",
+    "ya_tienes_cuenta": "¿Ya tienes una cuenta?",
+    "iniciar_sesion": "Iniciar Sesión",
+    "titulo_login": "Inicio de Sesión",
+    "bienvenido_de_vuelta": "Bienvenido de Vuelta",
+    "no_tienes_cuenta": "¿No tienes una cuenta?",
+    "crea_una_aqui": "Crea una aquí",
+    "cerrar_sesion": "Cerrar Sesión"
 }

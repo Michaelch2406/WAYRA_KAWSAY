@@ -832,3 +832,197 @@ function initParallaxEffect() {
 // Inicializar parallax
 initParallaxEffect();
 
+// Translation functionality
+let translationData = [];
+
+// Load translation data on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadTranslationData();
+});
+
+function loadTranslationData() {
+    fetch('api/kichwa-words.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                translationData = data.words;
+                console.log(`Loaded ${data.total} Kichwa words for translation`);
+            } else {
+                console.error('Error loading translation data:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading translation data:', error);
+        });
+}
+
+function translateToKichwa() {
+    const spanishText = document.getElementById('spanishInput').value.trim().toLowerCase();
+    
+    if (!spanishText) {
+        alert('Por favor, ingresa una palabra en español para traducir.');
+        return;
+    }
+    
+    const results = translationData.filter(word => 
+        word.traduccion_espanol.toLowerCase().includes(spanishText) ||
+        word.traduccion_espanol.toLowerCase() === spanishText
+    );
+    
+    displayTranslationResults(results, spanishText, 'spanish');
+}
+
+function translateToSpanish() {
+    const kichwaText = document.getElementById('kichwaInput').value.trim().toLowerCase();
+    
+    if (!kichwaText) {
+        alert('Por favor, ingresa una palabra en kichwa para traducir.');
+        return;
+    }
+    
+    const results = translationData.filter(word => 
+        word.palabra_kichwa.toLowerCase().includes(kichwaText) ||
+        word.palabra_kichwa.toLowerCase() === kichwaText
+    );
+    
+    displayTranslationResults(results, kichwaText, 'kichwa');
+}
+
+function displayTranslationResults(results, searchTerm, sourceLanguage) {
+    const resultsContainer = document.getElementById('translationResults');
+    const contentContainer = document.getElementById('translationContent');
+    
+    if (results.length === 0) {
+        contentContainer.innerHTML = `
+            <div class="no-translation-found">
+                <i class="fas fa-search fa-2x mb-3"></i>
+                <h5>No se encontraron traducciones exactas</h5>
+                <p>No se encontraron traducciones para "${searchTerm}"</p>
+                ${getSuggestions(searchTerm, sourceLanguage)}
+            </div>
+        `;
+    } else {
+        let html = '<div class="translation-matches">';
+        results.forEach(word => {
+            html += `
+                <div class="translation-match">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="kichwa-word">${word.palabra_kichwa}</div>
+                            <div class="spanish-word">${word.traduccion_espanol}</div>
+                            ${word.categoria ? `<small class="text-muted"><i class="fas fa-tag"></i> ${word.categoria}</small>` : ''}
+                        </div>
+                        <div>
+                            ${word.audio_url ? 
+                                `<button class="audio-btn" onclick="playTranslationAudio('${word.audio_url}')" title="Reproducir pronunciación">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>` : 
+                                '<span class="text-muted"><i class="fas fa-volume-mute"></i></span>'
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        contentContainer.innerHTML = html;
+    }
+    
+    resultsContainer.style.display = 'block';
+}
+
+function getSuggestions(searchTerm, sourceLanguage) {
+    const suggestions = translationData.filter(word => {
+        if (sourceLanguage === 'spanish') {
+            return word.traduccion_espanol.toLowerCase().includes(searchTerm.substring(0, 3));
+        } else {
+            return word.palabra_kichwa.toLowerCase().includes(searchTerm.substring(0, 3));
+        }
+    }).slice(0, 5);
+    
+    if (suggestions.length === 0) {
+        return '';
+    }
+    
+    let html = `
+        <div class="translation-suggestion">
+            <div class="suggestion-text">¿Quizás quisiste decir?</div>
+            <div class="suggestion-words">
+    `;
+    
+    suggestions.forEach(word => {
+        const displayWord = sourceLanguage === 'spanish' ? word.traduccion_espanol : word.palabra_kichwa;
+        html += `<span class="suggestion-word" onclick="applySuggestion('${displayWord}', '${sourceLanguage}')">${displayWord}</span>`;
+    });
+    
+    html += '</div></div>';
+    return html;
+}
+
+function applySuggestion(word, sourceLanguage) {
+    if (sourceLanguage === 'spanish') {
+        document.getElementById('spanishInput').value = word;
+        translateToKichwa();
+    } else {
+        document.getElementById('kichwaInput').value = word;
+        translateToSpanish();
+    }
+}
+
+function clearTranslation(language) {
+    if (language === 'spanish') {
+        document.getElementById('spanishInput').value = '';
+    } else {
+        document.getElementById('kichwaInput').value = '';
+    }
+    
+    // Hide results
+    document.getElementById('translationResults').style.display = 'none';
+}
+
+function swapTranslation() {
+    const spanishInput = document.getElementById('spanishInput');
+    const kichwaInput = document.getElementById('kichwaInput');
+    
+    const spanishText = spanishInput.value;
+    const kichwaText = kichwaInput.value;
+    
+    spanishInput.value = kichwaText;
+    kichwaInput.value = spanishText;
+    
+    // Hide previous results
+    document.getElementById('translationResults').style.display = 'none';
+}
+
+function playTranslationAudio(audioUrl) {
+    const audio = new Audio(`audio/${audioUrl}`);
+    audio.play().catch(error => {
+        console.error('Error playing audio:', error);
+        alert('No se pudo reproducir el audio.');
+    });
+}
+
+// Add Enter key support for translation inputs
+document.addEventListener('DOMContentLoaded', function() {
+    const spanishInput = document.getElementById('spanishInput');
+    const kichwaInput = document.getElementById('kichwaInput');
+    
+    if (spanishInput) {
+        spanishInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                translateToKichwa();
+            }
+        });
+    }
+    
+    if (kichwaInput) {
+        kichwaInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                translateToSpanish();
+            }
+        });
+    }
+});
+

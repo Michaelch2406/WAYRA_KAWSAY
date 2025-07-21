@@ -75,10 +75,11 @@ $stats = $stmt_stats->fetch(PDO::FETCH_ASSOC);
     
     <style>
         .dashboard-header {
-            background: linear-gradient(135deg, #8B4513, #D2691E);
-            color: white;
+            background: linear-gradient(135deg, #f8f4e6, #ede0c8);
+            color: #5d4e37;
             padding: 2rem 0;
             margin-bottom: 2rem;
+            border-left: 4px solid #d2691e;
         }
         .stat-card {
             background: white;
@@ -128,8 +129,9 @@ $stats = $stmt_stats->fetch(PDO::FETCH_ASSOC);
             transition: all 0.3s ease;
         }
         .nav-pills .nav-link.active {
-            background-color: #D2691E;
-            color: white;
+            background-color: #f4e4d0;
+            color: #8b4513;
+            border: 1px solid #d2691e;
         }
         .nav-pills .nav-link:hover {
             background-color: #f8f9fa;
@@ -162,31 +164,75 @@ $stats = $stmt_stats->fetch(PDO::FETCH_ASSOC);
     </style>
 </head>
 <body>
-    <!-- Navegación -->
+    <!-- Navegación mejorada -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="../index.php">
                 <i class="fas fa-mountain"></i>
                 <?php echo NOMBRE_PROYECTO; ?>
             </a>
-            <div class="d-flex align-items-center">
-                <select class="form-select me-2" id="language-selector" style="width: auto;">
-                    <option value="es" <?php if($lang_code == 'es') echo 'selected'; ?>>
-                        🇪🇸 Español
-                    </option>
-                    <option value="qu" <?php if($lang_code == 'qu') echo 'selected'; ?>>
-                        🏔️ Kichwa
-                    </option>
-                </select>
-                <div class="dropdown">
-                    <a href="#" class="nav-link dropdown-toggle text-white" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-palette"></i> <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="../index.php"><i class="fas fa-home"></i> <?php echo $texto['menu_inicio'] ?? 'Ir al sitio'; ?></a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="../logout.php"><i class="fas fa-sign-out-alt"></i> <?php echo $texto['cerrar_sesion'] ?? 'Cerrar Sesión'; ?></a></li>
-                    </ul>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.php">
+                            <i class="fas fa-home"></i>
+                            <?php echo $texto['menu_inicio']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../sabores.php">
+                            <i class="fas fa-utensils"></i>
+                            <?php echo $texto['menu_sabores']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../artesanias.php">
+                            <i class="fas fa-palette"></i>
+                            <?php echo $texto['menu_artesanias']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../kichwa.php">
+                            <i class="fas fa-language"></i>
+                            <?php echo $texto['menu_kichwa']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../cultura.php">
+                            <i class="fas fa-users"></i>
+                            <?php echo $texto['menu_cultura']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../ubicacion.php">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <?php echo $texto['menu_ubicacion']; ?>
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <select class="form-select me-2" id="language-selector" style="width: auto;">
+                        <option value="es" <?php if($lang_code == 'es') echo 'selected'; ?>>
+                            🇪🇸 Español
+                        </option>
+                        <option value="qu" <?php if($lang_code == 'qu') echo 'selected'; ?>>
+                            🏔️ Kichwa
+                        </option>
+                    </select>
+                    <div class="dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-palette"></i> <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="artesano.php"><i class="fas fa-tachometer-alt"></i> Mi Panel</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="../index.php"><i class="fas fa-home"></i> <?php echo $texto['menu_inicio'] ?? 'Ir al sitio'; ?></a></li>
+                            <li><a class="dropdown-item" href="../logout.php"><i class="fas fa-sign-out-alt"></i> <?php echo $texto['cerrar_sesion'] ?? 'Cerrar Sesión'; ?></a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -754,8 +800,104 @@ $stats = $stmt_stats->fetch(PDO::FETCH_ASSOC);
         }
 
         function editProduct(id) {
-            // Implementation for editing product
-            console.log('Edit product:', id);
+            // Get product data and show edit modal
+            fetch(`artesano-handler.php?action=get_product&id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showEditProductModal(data.product);
+                } else {
+                    alert('Error al cargar el producto: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error de conexión: ' + error.message);
+            });
+        }
+
+        function showEditProductModal(product) {
+            // Create edit modal
+            const modalHtml = `
+                <div class="modal fade" id="editProductModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Editar Producto</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form id="editProductForm" enctype="multipart/form-data">
+                                <div class="modal-body">
+                                    <input type="hidden" name="product_id" value="${product.id}">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nombre del Producto</label>
+                                        <input type="text" class="form-control" name="nombre" value="${product.nombre}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Descripción</label>
+                                        <textarea class="form-control" name="descripcion" rows="3" required>${product.descripcion}</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Imagen Actual</label>
+                                        ${product.imagen ? `<br><img src="../images/${product.imagen}" alt="Producto" style="max-width: 100px; height: auto;">` : '<br><span class="text-muted">Sin imagen</span>'}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Nueva Imagen (opcional)</label>
+                                        <input type="file" class="form-control" name="imagen" accept="image/*">
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="disponible" ${product.disponible ? 'checked' : ''}>
+                                        <label class="form-check-label">
+                                            Producto disponible
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Actualizar Producto</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('editProductModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add modal to page
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            
+            // Setup form submission
+            document.getElementById('editProductForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateProduct(new FormData(this));
+            });
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
+            modal.show();
+        }
+
+        function updateProduct(formData) {
+            fetch('artesano-handler.php?action=update_product', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Producto actualizado exitosamente');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error de conexión: ' + error.message);
+            });
         }
 
         function toggleProductStatus(id, status) {
@@ -797,12 +939,137 @@ $stats = $stmt_stats->fetch(PDO::FETCH_ASSOC);
         }
 
         function editContent(id) {
-            console.log('Edit content:', id);
+            // Get content data and show edit modal
+            fetch(`artesano-handler.php?action=get_content&id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showEditContentModal(data.content);
+                } else {
+                    alert('Error al cargar el contenido: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error de conexión: ' + error.message);
+            });
+        }
+
+        function showEditContentModal(content) {
+            // Create edit modal
+            const modalHtml = `
+                <div class="modal fade" id="editContentModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Editar Contenido</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form id="editContentForm">
+                                <div class="modal-body">
+                                    <input type="hidden" name="content_id" value="${content.id}">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Tipo de Contenido</label>
+                                                <select class="form-select" name="tipo" required>
+                                                    <option value="noticia" ${content.tipo === 'noticia' ? 'selected' : ''}>Noticia</option>
+                                                    <option value="historia" ${content.tipo === 'historia' ? 'selected' : ''}>Historia</option>
+                                                    <option value="leyenda" ${content.tipo === 'leyenda' ? 'selected' : ''}>Leyenda</option>
+                                                    <option value="tradicion" ${content.tipo === 'tradicion' ? 'selected' : ''}>Tradición</option>
+                                                    <option value="baile" ${content.tipo === 'baile' ? 'selected' : ''}>Baile</option>
+                                                    <option value="evento" ${content.tipo === 'evento' ? 'selected' : ''}>Evento</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Título</label>
+                                                <input type="text" class="form-control" name="titulo" value="${content.titulo}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">URL Multimedia (opcional)</label>
+                                                <input type="url" class="form-control" name="url_multimedia" value="${content.url_multimedia || ''}" placeholder="https://...">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Contenido</label>
+                                                <textarea class="form-control" name="cuerpo" rows="8" required>${content.cuerpo}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-info">
+                                        <small><i class="fas fa-info-circle"></i> El contenido editado volverá a estado pendiente para revisión.</small>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Actualizar Contenido</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('editContentModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add modal to page
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            
+            // Setup form submission
+            document.getElementById('editContentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateContent(new FormData(this));
+            });
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('editContentModal'));
+            modal.show();
+        }
+
+        function updateContent(formData) {
+            fetch('artesano-handler.php?action=update_content', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Contenido actualizado exitosamente');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error de conexión: ' + error.message);
+            });
         }
 
         function deleteContent(id) {
             if (confirm('¿Estás seguro de que deseas eliminar este contenido?')) {
-                console.log('Delete content:', id);
+                fetch('artesano-handler.php?action=delete_content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `content_id=${id}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Contenido eliminado exitosamente');
+                        location.reload();
+                    } else {
+                        alert('Error al eliminar el contenido: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Error de conexión: ' + error.message);
+                });
             }
         }
     </script>

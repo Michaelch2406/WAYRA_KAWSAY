@@ -806,3 +806,207 @@ audio::-webkit-media-controls-panel {
     50% { opacity: 0.5; }
 }
 
+/* Translator Section Styles */
+.translator-section {
+    padding: 2rem 0;
+}
+
+.translator-card {
+    background: linear-gradient(135deg, var(--color-white), #f8f9fa);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-medium);
+    border: 2px solid rgba(139, 69, 19, 0.1);
+    transition: var(--transition);
+}
+
+.translator-card:hover {
+    box-shadow: var(--shadow-strong);
+    transform: translateY(-2px);
+}
+
+.translator-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.translator-header h3 {
+    color: var(--color-primary);
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.translation-input, .translation-output {
+    background: var(--color-white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 2px solid rgba(139, 69, 19, 0.1);
+    transition: var(--transition);
+    margin-bottom: 1rem;
+}
+
+.translation-input:hover, .translation-output:hover {
+    border-color: var(--color-secondary);
+    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.1);
+}
+
+.translation-input .form-label, .translation-output .form-label {
+    color: var(--color-primary);
+    font-weight: bold;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.translation-input textarea, .translation-output textarea {
+    border: 1px solid rgba(139, 69, 19, 0.2);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+    resize: vertical;
+}
+
+.translation-input textarea:focus, .translation-output textarea:focus {
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 0.2rem rgba(210, 105, 30, 0.25);
+}
+
+.input-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    justify-content: flex-end;
+}
+
+.btn-swap {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    margin: 1rem 0;
+}
+
+.btn-swap:hover {
+    transform: rotate(180deg) scale(1.1);
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: var(--color-white);
+}
+
+.translation-results {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #e3f2fd;
+    border-radius: 12px;
+    border-left: 4px solid var(--color-secondary);
+}
+
+.translation-results h6 {
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+
+.translation-match {
+    background: var(--color-white);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--color-secondary);
+    transition: var(--transition);
+}
+
+.translation-match:hover {
+    background: #f8f9fa;
+    transform: translateX(5px);
+}
+
+.translation-match .kichwa-word {
+    font-weight: bold;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+}
+
+.translation-match .spanish-word {
+    color: var(--color-text);
+    font-style: italic;
+}
+
+.translation-match .audio-btn {
+    background: none;
+    border: none;
+    color: var(--color-secondary);
+    font-size: 1.2rem;
+    transition: var(--transition);
+}
+
+.translation-match .audio-btn:hover {
+    color: var(--color-primary);
+    transform: scale(1.2);
+}
+
+.no-translation-found {
+    text-align: center;
+    color: var(--color-text);
+    font-style: italic;
+    padding: 2rem;
+}
+
+.translation-suggestion {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.translation-suggestion .suggestion-text {
+    color: #856404;
+    margin-bottom: 0.5rem;
+}
+
+.translation-suggestion .suggestion-words {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.translation-suggestion .suggestion-word {
+    background: var(--color-white);
+    border: 1px solid var(--color-secondary);
+    border-radius: 15px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.9rem;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.translation-suggestion .suggestion-word:hover {
+    background: var(--color-secondary);
+    color: var(--color-white);
+}
+
+/* Responsive adjustments for translator */
+@media (max-width: 768px) {
+    .translator-card {
+        padding: 1rem;
+    }
+    
+    .btn-swap {
+        width: 50px;
+        height: 50px;
+        margin: 0.5rem 0;
+    }
+    
+    .input-actions {
+        justify-content: center;
+    }
+    
+    .translation-input, .translation-output {
+        padding: 1rem;
+    }
+}
+

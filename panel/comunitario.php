@@ -56,10 +56,11 @@ $stats = $stmt_stats->fetch(PDO::FETCH_ASSOC);
     
     <style>
         .dashboard-header {
-            background: linear-gradient(135deg, #2E8B57, #228B22);
-            color: white;
+            background: linear-gradient(135deg, #f0f8f0, #e8f5e8);
+            color: #2d5a3d;
             padding: 2rem 0;
             margin-bottom: 2rem;
+            border-left: 4px solid #2e8b57;
         }
         .stat-card {
             background: white;
@@ -98,28 +99,82 @@ $stats = $stmt_stats->fetch(PDO::FETCH_ASSOC);
             margin-bottom: 0.5rem;
         }
         .nav-pills .nav-link.active {
-            background-color: #2E8B57;
+            background-color: #e8f5e8;
+            color: #2e8b57;
+            border: 1px solid #2e8b57;
         }
     </style>
 </head>
 <body>
-    <!-- Navegación -->
+    <!-- Navegación mejorada -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="../index.php">
                 <i class="fas fa-mountain"></i>
                 <?php echo NOMBRE_PROYECTO; ?>
             </a>
-            <div class="d-flex align-items-center">
-                <div class="dropdown">
-                    <a href="#" class="nav-link dropdown-toggle text-white" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user"></i> <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="../index.php"><i class="fas fa-home"></i> Ir al sitio</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="../logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
-                    </ul>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.php">
+                            <i class="fas fa-home"></i>
+                            <?php echo $texto['menu_inicio']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../sabores.php">
+                            <i class="fas fa-utensils"></i>
+                            <?php echo $texto['menu_sabores']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../artesanias.php">
+                            <i class="fas fa-palette"></i>
+                            <?php echo $texto['menu_artesanias']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../kichwa.php">
+                            <i class="fas fa-language"></i>
+                            <?php echo $texto['menu_kichwa']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../cultura.php">
+                            <i class="fas fa-users"></i>
+                            <?php echo $texto['menu_cultura']; ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../ubicacion.php">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <?php echo $texto['menu_ubicacion']; ?>
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <select class="form-select me-2" id="language-selector" style="width: auto;">
+                        <option value="es" <?php if($lang_code == 'es') echo 'selected'; ?>>
+                            🇪🇸 Español
+                        </option>
+                        <option value="qu" <?php if($lang_code == 'qu') echo 'selected'; ?>>
+                            🏔️ Kichwa
+                        </option>
+                    </select>
+                    <div class="dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user"></i> <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="comunitario.php"><i class="fas fa-tachometer-alt"></i> Mi Panel</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="../index.php"><i class="fas fa-home"></i> <?php echo $texto['menu_inicio'] ?? 'Ir al sitio'; ?></a></li>
+                            <li><a class="dropdown-item" href="../logout.php"><i class="fas fa-sign-out-alt"></i> <?php echo $texto['cerrar_sesion'] ?? 'Cerrar Sesión'; ?></a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -518,19 +573,201 @@ $stats = $stmt_stats->fetch(PDO::FETCH_ASSOC);
         }
 
         function editContent(id) {
-            // Implementation for editing content
-            console.log('Edit content:', id);
+            fetch(`content-handler.php?action=get_content&id=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const content = data.content;
+                        
+                        // Create modal for editing
+                        const modalHtml = `
+                            <div class="modal fade" id="editContentModal" tabindex="-1">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Editar Contenido</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="editContentForm">
+                                                <input type="hidden" id="edit_content_id" value="${content.id}">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Tipo de Contenido</label>
+                                                            <select class="form-select" id="edit_tipo" name="tipo" required>
+                                                                <option value="noticia" ${content.tipo === 'noticia' ? 'selected' : ''}>Noticia/Anuncio</option>
+                                                                <option value="historia" ${content.tipo === 'historia' ? 'selected' : ''}>Historia</option>
+                                                                <option value="leyenda" ${content.tipo === 'leyenda' ? 'selected' : ''}>Leyenda</option>
+                                                                <option value="tradicion" ${content.tipo === 'tradicion' ? 'selected' : ''}>Tradición</option>
+                                                                <option value="evento" ${content.tipo === 'evento' ? 'selected' : ''}>Evento</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Título</label>
+                                                            <input type="text" class="form-control" id="edit_titulo" name="titulo" value="${content.titulo}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Contenido</label>
+                                                    <textarea class="form-control" id="edit_cuerpo" name="cuerpo" rows="6" required>${content.cuerpo}</textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">URL de Multimedia (opcional)</label>
+                                                    <input type="url" class="form-control" id="edit_url_multimedia" name="url_multimedia" value="${content.url_multimedia || ''}">
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="button" class="btn btn-primary" onclick="updateContent()">Guardar Cambios</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Remove existing modal if any
+                        const existingModal = document.getElementById('editContentModal');
+                        if (existingModal) existingModal.remove();
+                        
+                        // Add modal to page
+                        document.body.insertAdjacentHTML('beforeend', modalHtml);
+                        
+                        // Show modal
+                        const modal = new bootstrap.Modal(document.getElementById('editContentModal'));
+                        modal.show();
+                    } else {
+                        alert('Error al cargar el contenido: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Error al cargar el contenido');
+                });
+        }
+
+        function updateContent() {
+            const form = document.getElementById('editContentForm');
+            const formData = new FormData(form);
+            formData.append('action', 'update_content');
+            formData.append('content_id', document.getElementById('edit_content_id').value);
+            
+            fetch('content-handler.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Contenido actualizado exitosamente');
+                    bootstrap.Modal.getInstance(document.getElementById('editContentModal')).hide();
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error al actualizar el contenido');
+            });
         }
 
         function viewContent(id) {
-            // Implementation for viewing content
-            console.log('View content:', id);
+            fetch(`content-handler.php?action=get_content&id=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const content = data.content;
+                        
+                        // Create modal for viewing
+                        const modalHtml = `
+                            <div class="modal fade" id="viewContentModal" tabindex="-1">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Ver Contenido</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <strong>Tipo:</strong> <span class="badge bg-primary">${content.tipo}</span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>Título:</strong> ${content.titulo}
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>Estado:</strong> <span class="badge bg-${content.estado === 'aprobado' ? 'success' : content.estado === 'pendiente' ? 'warning' : 'danger'}">${content.estado}</span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>Contenido:</strong>
+                                                <div class="border p-3 mt-2">${content.cuerpo}</div>
+                                            </div>
+                                            ${content.url_multimedia ? `
+                                                <div class="mb-3">
+                                                    <strong>Multimedia:</strong>
+                                                    <div class="mt-2">
+                                                        <a href="${content.url_multimedia}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                                            <i class="fas fa-external-link-alt"></i> Ver enlace
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            ` : ''}
+                                            <div class="mb-3">
+                                                <strong>Fecha de creación:</strong> ${new Date(content.fecha_creacion).toLocaleDateString()}
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                            <button type="button" class="btn btn-primary" onclick="editContent(${content.id})" data-bs-dismiss="modal">Editar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Remove existing modal if any
+                        const existingModal = document.getElementById('viewContentModal');
+                        if (existingModal) existingModal.remove();
+                        
+                        // Add modal to page
+                        document.body.insertAdjacentHTML('beforeend', modalHtml);
+                        
+                        // Show modal
+                        const modal = new bootstrap.Modal(document.getElementById('viewContentModal'));
+                        modal.show();
+                    } else {
+                        alert('Error al cargar el contenido: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Error al cargar el contenido');
+                });
         }
 
         function deleteContent(id) {
             if (confirm('¿Estás seguro de que deseas eliminar este contenido?')) {
-                // Implementation for deleting content
-                console.log('Delete content:', id);
+                const formData = new FormData();
+                formData.append('action', 'delete_content');
+                formData.append('content_id', id);
+                
+                fetch('content-handler.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Contenido eliminado exitosamente');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Error al eliminar el contenido');
+                });
             }
         }
     </script>

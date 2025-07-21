@@ -111,38 +111,32 @@ $eventos_ejemplo = [
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" href="index.php">
-                            <i class="fas fa-home"></i>
-                            <?php echo $texto['menu_inicio']; ?>
+                            <i class="fas fa-home"></i> <?php echo $texto['menu_inicio']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="sabores.php">
-                            <i class="fas fa-utensils"></i>
-                            <?php echo $texto['menu_sabores']; ?>
+                            <i class="fas fa-utensils"></i> <?php echo $texto['menu_sabores']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="artesanias.php">
-                            <i class="fas fa-palette"></i>
-                            <?php echo $texto['menu_artesanias']; ?>
+                            <i class="fas fa-palette"></i> <?php echo $texto['menu_artesanias']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="kichwa.php">
-                            <i class="fas fa-language"></i>
-                            <?php echo $texto['menu_kichwa']; ?>
+                            <i class="fas fa-language"></i> <?php echo $texto['menu_kichwa']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="cultura.php">
-                            <i class="fas fa-theater-masks"></i>
-                            <?php echo $texto['menu_cultura']; ?>
+                            <i class="fas fa-theater-masks"></i> <?php echo $texto['menu_cultura']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="ubicacion.php">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <?php echo $texto['menu_ubicacion']; ?>
+                            <i class="fas fa-map-marker-alt"></i> <?php echo $texto['menu_ubicacion']; ?>
                         </a>
                     </li>
                 </ul>
@@ -161,7 +155,17 @@ $eventos_ejemplo = [
                                 <i class="fas fa-user"></i> <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="logout.php"><?php echo $texto['cerrar_sesion']; ?></a></li>
+                                <?php if (isset($_SESSION['usuario_rol'])): ?>
+                                    <?php if ($_SESSION['usuario_rol'] === 'admin'): ?>
+                                        <li><a class="dropdown-item" href="admin/dashboard.php"><i class="fas fa-tachometer-alt"></i> Panel Admin</a></li>
+                                    <?php elseif ($_SESSION['usuario_rol'] === 'artesano'): ?>
+                                        <li><a class="dropdown-item" href="panel/artesano.php"><i class="fas fa-palette"></i> Panel Artesano</a></li>
+                                    <?php elseif ($_SESSION['usuario_rol'] === 'comunitario'): ?>
+                                        <li><a class="dropdown-item" href="panel/comunitario.php"><i class="fas fa-users"></i> Panel Comunitario</a></li>
+                                    <?php endif; ?>
+                                    <li><hr class="dropdown-divider"></li>
+                                <?php endif; ?>
+                                <li><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt"></i> <?php echo $texto['cerrar_sesion']; ?></a></li>
                             </ul>
                         </div>
                     <?php else: ?>

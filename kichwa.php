@@ -47,38 +47,32 @@ $stmt = $kichwa->read();
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" href="index.php">
-                            <i class="fas fa-home"></i>
-                            <?php echo $texto['menu_inicio']; ?>
+                            <i class="fas fa-home"></i> <?php echo $texto['menu_inicio']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="sabores.php">
-                            <i class="fas fa-utensils"></i>
-                            <?php echo $texto['menu_sabores']; ?>
+                            <i class="fas fa-utensils"></i> <?php echo $texto['menu_sabores']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="artesanias.php">
-                            <i class="fas fa-palette"></i>
-                            <?php echo $texto['menu_artesanias']; ?>
+                            <i class="fas fa-palette"></i> <?php echo $texto['menu_artesanias']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="kichwa.php">
-                            <i class="fas fa-language"></i>
-                            <?php echo $texto['menu_kichwa']; ?>
+                            <i class="fas fa-language"></i> <?php echo $texto['menu_kichwa']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="cultura.php">
-                            <i class="fas fa-users"></i>
-                            <?php echo $texto['menu_cultura']; ?>
+                            <i class="fas fa-users"></i> <?php echo $texto['menu_cultura']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="ubicacion.php">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <?php echo $texto['menu_ubicacion']; ?>
+                            <i class="fas fa-map-marker-alt"></i> <?php echo $texto['menu_ubicacion']; ?>
                         </a>
                     </li>
                 </ul>
@@ -97,7 +91,17 @@ $stmt = $kichwa->read();
                                 <i class="fas fa-user"></i> <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="logout.php"><?php echo $texto['cerrar_sesion']; ?></a></li>
+                                <?php if (isset($_SESSION['usuario_rol'])): ?>
+                                    <?php if ($_SESSION['usuario_rol'] === 'admin'): ?>
+                                        <li><a class="dropdown-item" href="admin/dashboard.php"><i class="fas fa-tachometer-alt"></i> Panel Admin</a></li>
+                                    <?php elseif ($_SESSION['usuario_rol'] === 'artesano'): ?>
+                                        <li><a class="dropdown-item" href="panel/artesano.php"><i class="fas fa-palette"></i> Panel Artesano</a></li>
+                                    <?php elseif ($_SESSION['usuario_rol'] === 'comunitario'): ?>
+                                        <li><a class="dropdown-item" href="panel/comunitario.php"><i class="fas fa-users"></i> Panel Comunitario</a></li>
+                                    <?php endif; ?>
+                                    <li><hr class="dropdown-divider"></li>
+                                <?php endif; ?>
+                                <li><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt"></i> <?php echo $texto['cerrar_sesion']; ?></a></li>
                             </ul>
                         </div>
                     <?php else: ?>
@@ -193,6 +197,61 @@ $stmt = $kichwa->read();
                         </div>
                         <h3 class="info-title">Imbabura</h3>
                         <p class="info-description">Tradición ancestral</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Traductor Español - Kichwa -->
+            <div class="translator-section mb-5">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="translator-card">
+                            <div class="translator-header">
+                                <h3><i class="fas fa-exchange-alt"></i> Traductor Español ↔ Kichwa</h3>
+                                <p class="text-muted">Ingresa una palabra para buscar su traducción en nuestro diccionario</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="translation-input">
+                                        <label class="form-label"><i class="fas fa-globe"></i> Español</label>
+                                        <textarea class="form-control" id="spanishInput" rows="3" placeholder="Escribe una palabra en español..."></textarea>
+                                        <div class="input-actions">
+                                            <button class="btn btn-outline-secondary btn-sm" onclick="clearTranslation('spanish')">
+                                                <i class="fas fa-eraser"></i> Limpiar
+                                            </button>
+                                            <button class="btn btn-primary btn-sm" onclick="translateToKichwa()">
+                                                <i class="fas fa-arrow-right"></i> Traducir
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 d-flex align-items-center justify-content-center">
+                                    <button class="btn btn-outline-primary btn-swap" onclick="swapTranslation()">
+                                        <i class="fas fa-exchange-alt fa-2x"></i>
+                                    </button>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="translation-output">
+                                        <label class="form-label"><i class="fas fa-language"></i> Kichwa</label>
+                                        <textarea class="form-control" id="kichwaInput" rows="3" placeholder="Escribe una palabra en kichwa..."></textarea>
+                                        <div class="input-actions">
+                                            <button class="btn btn-outline-secondary btn-sm" onclick="clearTranslation('kichwa')">
+                                                <i class="fas fa-eraser"></i> Limpiar
+                                            </button>
+                                            <button class="btn btn-primary btn-sm" onclick="translateToSpanish()">
+                                                <i class="fas fa-arrow-left"></i> Traducir
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="translation-results" id="translationResults" style="display: none;">
+                                <div class="alert alert-info">
+                                    <h6><i class="fas fa-search"></i> Resultados de búsqueda:</h6>
+                                    <div id="translationContent"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

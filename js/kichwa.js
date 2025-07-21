@@ -793,6 +793,72 @@ additionalStyles.textContent = `
     .fade-in-up {
         animation: fadeInUp 0.8s ease-out;
     }
+    
+    /* Suggestion dropdown styles */
+    .suggestions-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #ddd;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+        max-height: 250px;
+        overflow-y: auto;
+        display: none;
+    }
+    
+    .suggestion-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background-color 0.2s ease;
+    }
+    
+    .suggestion-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .suggestion-item:last-child {
+        border-bottom: none;
+    }
+    
+    .suggestion-primary {
+        font-weight: 600;
+        color: #333;
+        font-size: 0.95rem;
+    }
+    
+    .suggestion-secondary {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 2px;
+    }
+    
+    /* Pagination styles */
+    .pagination .page-link {
+        color: #8b4513;
+        border-color: #ddd;
+    }
+    
+    .pagination .page-link:hover {
+        background-color: #f8f5f0;
+        border-color: #8b4513;
+        color: #5a2d0c;
+    }
+    
+    .pagination .page-item.active .page-link {
+        background-color: #8b4513;
+        border-color: #8b4513;
+    }
+    
+    .pagination .page-item.active .page-link:hover {
+        background-color: #5a2d0c;
+        border-color: #5a2d0c;
+    }
 `;
 document.head.appendChild(additionalStyles);
 
@@ -1002,6 +1068,132 @@ function playTranslationAudio(audioUrl) {
     });
 }
 
+// Pagination functions
+function changeRowsPerPage() {
+    const rowsSelector = document.getElementById('rowsSelector');
+    const selectedRows = rowsSelector.value;
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Update URL with new rows parameter and reset to page 1
+    urlParams.set('rows', selectedRows);
+    urlParams.set('page', '1');
+    
+    // Redirect to updated URL
+    window.location.href = window.location.pathname + '?' + urlParams.toString();
+}
+
+// Enhanced suggestion functionality for translation inputs
+function initTranslationSuggestions() {
+    const spanishInput = document.getElementById('spanishInput');
+    const kichwaInput = document.getElementById('kichwaInput');
+    
+    if (spanishInput) {
+        let spanishTimeout;
+        spanishInput.addEventListener('input', function() {
+            clearTimeout(spanishTimeout);
+            spanishTimeout = setTimeout(() => {
+                showTranslationSuggestions(this.value, 'spanish');
+            }, 300);
+        });
+        
+        spanishInput.addEventListener('focus', function() {
+            if (this.value.trim()) {
+                showTranslationSuggestions(this.value, 'spanish');
+            }
+        });
+    }
+    
+    if (kichwaInput) {
+        let kichwaTimeout;
+        kichwaInput.addEventListener('input', function() {
+            clearTimeout(kichwaTimeout);
+            kichwaTimeout = setTimeout(() => {
+                showTranslationSuggestions(this.value, 'kichwa');
+            }, 300);
+        });
+        
+        kichwaInput.addEventListener('focus', function() {
+            if (this.value.trim()) {
+                showTranslationSuggestions(this.value, 'kichwa');
+            }
+        });
+    }
+}
+
+function showTranslationSuggestions(value, language) {
+    if (!value || value.length < 2) {
+        hideTranslationSuggestions(language);
+        return;
+    }
+    
+    const suggestions = getFilteredSuggestions(value, language);
+    const containerId = language === 'spanish' ? 'spanishSuggestions' : 'kichwaSuggestions';
+    const container = document.getElementById(containerId);
+    
+    if (!container) return;
+    
+    if (suggestions.length === 0) {
+        hideTranslationSuggestions(language);
+        return;
+    }
+    
+    let html = '';
+    suggestions.forEach(suggestion => {
+        const displayText = language === 'spanish' ? suggestion.traduccion_espanol : suggestion.palabra_kichwa;
+        const secondaryText = language === 'spanish' ? suggestion.palabra_kichwa : suggestion.traduccion_espanol;
+        
+        html += `
+            <div class="suggestion-item" onclick="selectTranslationSuggestion('${displayText}', '${language}')">
+                <div class="suggestion-primary">${displayText}</div>
+                <div class="suggestion-secondary">${secondaryText}</div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+    container.style.display = 'block';
+}
+
+function getFilteredSuggestions(value, language) {
+    const lowerValue = value.toLowerCase();
+    return translationData.filter(word => {
+        if (language === 'spanish') {
+            return word.traduccion_espanol.toLowerCase().includes(lowerValue);
+        } else {
+            return word.palabra_kichwa.toLowerCase().includes(lowerValue);
+        }
+    }).slice(0, 8);
+}
+
+function selectTranslationSuggestion(text, language) {
+    const inputId = language === 'spanish' ? 'spanishInput' : 'kichwaInput';
+    document.getElementById(inputId).value = text;
+    hideTranslationSuggestions(language);
+    
+    // Auto-translate
+    if (language === 'spanish') {
+        translateToKichwa();
+    } else {
+        translateToSpanish();
+    }
+}
+
+function hideTranslationSuggestions(language) {
+    const containerId = language === 'spanish' ? 'spanishSuggestions' : 'kichwaSuggestions';
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.style.display = 'none';
+    }
+}
+
+// Hide suggestions when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.translation-input') && !e.target.closest('.translation-output')) {
+        hideTranslationSuggestions('spanish');
+        hideTranslationSuggestions('kichwa');
+    }
+});
+
 // Add Enter key support for translation inputs
 document.addEventListener('DOMContentLoaded', function() {
     const spanishInput = document.getElementById('spanishInput');
@@ -1024,5 +1216,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Initialize translation suggestions
+    initTranslationSuggestions();
 });
 

@@ -231,7 +231,10 @@ $stats_stmt = $kichwa->read();
                                 <div class="col-md-5">
                                     <div class="translation-input">
                                         <label class="form-label"><i class="fas fa-globe"></i> Español</label>
-                                        <textarea class="form-control" id="spanishInput" rows="3" placeholder="Escribe una palabra en español..."></textarea>
+                                        <div class="position-relative">
+                                            <textarea class="form-control" id="spanishInput" rows="3" placeholder="Escribe una palabra en español..."></textarea>
+                                            <div id="spanishSuggestions" class="suggestions-dropdown"></div>
+                                        </div>
                                         <div class="input-actions">
                                             <button class="btn btn-outline-secondary btn-sm" onclick="clearTranslation('spanish')">
                                                 <i class="fas fa-eraser"></i> Limpiar
@@ -250,7 +253,10 @@ $stats_stmt = $kichwa->read();
                                 <div class="col-md-5">
                                     <div class="translation-output">
                                         <label class="form-label"><i class="fas fa-language"></i> Kichwa</label>
-                                        <textarea class="form-control" id="kichwaInput" rows="3" placeholder="Escribe una palabra en kichwa..."></textarea>
+                                        <div class="position-relative">
+                                            <textarea class="form-control" id="kichwaInput" rows="3" placeholder="Escribe una palabra en kichwa..."></textarea>
+                                            <div id="kichwaSuggestions" class="suggestions-dropdown"></div>
+                                        </div>
                                         <div class="input-actions">
                                             <button class="btn btn-outline-secondary btn-sm" onclick="clearTranslation('kichwa')">
                                                 <i class="fas fa-eraser"></i> Limpiar
@@ -275,6 +281,28 @@ $stats_stmt = $kichwa->read();
 
             <!-- Tabla de palabras Kichwa -->
             <div class="kichwa-dictionary">
+                <!-- Controles de paginación -->
+                <div class="row mb-3 align-items-center">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 mb-0">Mostrar:</label>
+                            <select class="form-select" id="rowsSelector" style="width: auto;" onchange="changeRowsPerPage()">
+                                <option value="5" <?php echo $rows_per_page == 5 ? 'selected' : ''; ?>>5 filas</option>
+                                <option value="10" <?php echo $rows_per_page == 10 ? 'selected' : ''; ?>>10 filas</option>
+                                <option value="20" <?php echo $rows_per_page == 20 ? 'selected' : ''; ?>>20 filas</option>
+                                <option value="50" <?php echo $rows_per_page == 50 ? 'selected' : ''; ?>>50 filas</option>
+                                <option value="100" <?php echo $rows_per_page == 100 ? 'selected' : ''; ?>>100 filas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <small class="text-muted">
+                            Mostrando <?php echo min(($current_page - 1) * $rows_per_page + 1, $total_words); ?> - 
+                            <?php echo min($current_page * $rows_per_page, $total_words); ?> de <?php echo $total_words; ?> palabras
+                        </small>
+                    </div>
+                </div>
+
                 <div class="table-responsive">
                     <table class="table kichwa-table">
                         <thead>
@@ -292,8 +320,8 @@ $stats_stmt = $kichwa->read();
                         </thead>
                         <tbody>
                             <?php 
-                            // Reiniciar el statement para la tabla
-                            $stmt = $kichwa->read();
+                            // Usar datos paginados
+                            $stmt = $kichwa->read($rows_per_page, $offset);
                             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): 
                             ?>
                                 <tr class="kichwa-row">
@@ -321,6 +349,52 @@ $stats_stmt = $kichwa->read();
                         </tbody>
                     </table>
                 </div>
+                
+                <!-- Paginación -->
+                <?php if ($total_pages > 1): ?>
+                <nav aria-label="Navegación de páginas">
+                    <ul class="pagination justify-content-center">
+                        <?php if ($current_page > 1): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1&rows=<?php echo $rows_per_page; ?>" aria-label="Primera">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?php echo $current_page - 1; ?>&rows=<?php echo $rows_per_page; ?>" aria-label="Anterior">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                        
+                        <?php 
+                        $start_page = max(1, $current_page - 2);
+                        $end_page = min($total_pages, $current_page + 2);
+                        
+                        for ($i = $start_page; $i <= $end_page; $i++): 
+                        ?>
+                            <li class="page-item <?php echo $i == $current_page ? 'active' : ''; ?>">
+                                <a class="page-link" href="?page=<?php echo $i; ?>&rows=<?php echo $rows_per_page; ?>">
+                                    <?php echo $i; ?>
+                                </a>
+                            </li>
+                        <?php endfor; ?>
+                        
+                        <?php if ($current_page < $total_pages): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?php echo $current_page + 1; ?>&rows=<?php echo $rows_per_page; ?>" aria-label="Siguiente">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?php echo $total_pages; ?>&rows=<?php echo $rows_per_page; ?>" aria-label="Última">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
+                <?php endif; ?>
 
                 <!-- Mensaje cuando no hay resultados -->
                 <div id="noResults" class="text-center py-5" style="display: none;">

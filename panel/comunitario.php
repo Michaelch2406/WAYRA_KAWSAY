@@ -120,38 +120,32 @@ $stats = $stmt_stats->fetch(PDO::FETCH_ASSOC);
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" href="../index.php">
-                            <i class="fas fa-home"></i>
-                            <?php echo $texto['menu_inicio']; ?>
+                            <i class="fas fa-home"></i> <?php echo $texto['menu_inicio']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../sabores.php">
-                            <i class="fas fa-utensils"></i>
-                            <?php echo $texto['menu_sabores']; ?>
+                            <i class="fas fa-utensils"></i> <?php echo $texto['menu_sabores']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../artesanias.php">
-                            <i class="fas fa-palette"></i>
-                            <?php echo $texto['menu_artesanias']; ?>
+                            <i class="fas fa-palette"></i> <?php echo $texto['menu_artesanias']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../kichwa.php">
-                            <i class="fas fa-language"></i>
-                            <?php echo $texto['menu_kichwa']; ?>
+                            <i class="fas fa-language"></i> <?php echo $texto['menu_kichwa']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../cultura.php">
-                            <i class="fas fa-users"></i>
-                            <?php echo $texto['menu_cultura']; ?>
+                            <i class="fas fa-users"></i> <?php echo $texto['menu_cultura']; ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../ubicacion.php">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <?php echo $texto['menu_ubicacion']; ?>
+                            <i class="fas fa-map-marker-alt"></i> <?php echo $texto['menu_ubicacion']; ?>
                         </a>
                     </li>
                 </ul>

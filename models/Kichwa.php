@@ -13,9 +13,20 @@ class Kichwa {
         $this->conn = $db;
     }
 
-    function read() {
+    function read($limit = null, $offset = 0) {
         $query = "SELECT id, palabra_kichwa, traduccion_espanol, audio_url, categoria, fecha_creacion FROM " . $this->table_name . " ORDER BY palabra_kichwa ASC";
+        
+        if ($limit !== null) {
+            $query .= " LIMIT :limit OFFSET :offset";
+        }
+        
         $stmt = $this->conn->prepare($query);
+        
+        if ($limit !== null) {
+            $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        }
+        
         $stmt->execute();
         return $stmt;
     }
@@ -130,6 +141,14 @@ class Kichwa {
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    function getTotalCount() {
+        $query = "SELECT COUNT(*) as total FROM " . $this->table_name;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
     }
 }
 ?>

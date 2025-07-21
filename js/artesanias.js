@@ -115,26 +115,7 @@ function initArtesanoAnimations() {
             card.classList.add('fade-in');
         }, index * 200);
         
-        // Efectos hover adicionales
-        card.addEventListener('mouseenter', function() {
-            this.classList.add('craft-texture');
-            
-            // Animar foto del artesano
-            const photo = this.querySelector('.artesano-photo');
-            if (photo) {
-                photo.style.transform = 'scale(1.05) rotate(2deg)';
-            }
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.classList.remove('craft-texture');
-            
-            // Restaurar foto del artesano
-            const photo = this.querySelector('.artesano-photo');
-            if (photo) {
-                photo.style.transform = 'scale(1) rotate(0deg)';
-            }
-        });
+        // Efectos hover eliminados para evitar transparencia molesta
         
         // Expandir/contraer productos
         const toggleBtn = card.querySelector('.toggle-productos');
@@ -161,18 +142,7 @@ function initProductoAnimations() {
             card.classList.add('slide-in-right');
         }, index * 100);
         
-        // Efectos hover
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-8px) scale(1.02) rotateY(5deg)';
-            
-            // Efecto de brillo
-            this.classList.add('sparkle-effect');
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1) rotateY(0deg)';
-            this.classList.remove('sparkle-effect');
-        });
+        // Efectos hover eliminados para evitar transformaciones complejas
         
         // Click para abrir modal
         card.addEventListener('click', function() {
@@ -510,17 +480,7 @@ handleImageErrors();
 
 // Efectos especiales para artesanías
 function initCraftEffects() {
-    // Efecto de tejido en hover
-    const artesanoCards = document.querySelectorAll('.artesano-card');
-    artesanoCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.classList.add('weaving-pattern');
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.classList.remove('weaving-pattern');
-        });
-    });
+    // Efectos de tejido eliminados para evitar transparencia
     
     // Efecto de calidad artesanal
     const productoCards = document.querySelectorAll('.producto-card');
@@ -575,23 +535,7 @@ additionalStyles.textContent = `
         100% { transform: rotate(360deg); }
     }
     
-    .sparkle-effect {
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .sparkle-effect::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(218, 165, 32, 0.3) 1px, transparent 1px);
-        background-size: 15px 15px;
-        animation: sparkle 2s linear infinite;
-        pointer-events: none;
-    }
+    /* Efectos sparkle eliminados para evitar transparencia */
     
     .animate-in {
         animation: fadeInUp 0.6s ease-out;

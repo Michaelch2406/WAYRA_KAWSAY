@@ -7,7 +7,24 @@ $database = new Conexion();
 $db = $database->getConnection();
 
 $kichwa = new Kichwa($db);
-$stmt = $kichwa->read();
+
+// Parámetros de paginación
+$rows_per_page = isset($_GET['rows']) ? (int)$_GET['rows'] : 10; // Default 10 filas
+$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($current_page - 1) * $rows_per_page;
+
+// Validar parámetros
+if ($rows_per_page < 5) $rows_per_page = 5;
+if ($rows_per_page > 100) $rows_per_page = 100;
+if ($current_page < 1) $current_page = 1;
+
+// Obtener datos paginados
+$stmt = $kichwa->read($rows_per_page, $offset);
+$total_words = $kichwa->getTotalCount();
+$total_pages = ceil($total_words / $rows_per_page);
+
+// Para las estadísticas (sin paginación)
+$stats_stmt = $kichwa->read();
 ?>
 
 <!DOCTYPE html>

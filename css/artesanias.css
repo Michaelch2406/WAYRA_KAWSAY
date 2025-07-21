@@ -199,22 +199,7 @@ body {
     box-shadow: var(--shadow-craft);
 }
 
-.artesano-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, var(--color-craft-warm), var(--color-craft-secondary));
-    opacity: 0;
-    transition: var(--transition);
-    z-index: 1;
-}
-
-.artesano-card:hover::before {
-    opacity: 0;
-}
+/* Efecto ::before eliminado para evitar transparencia molesta */
 
 .artesano-header {
     display: flex;
@@ -345,7 +330,7 @@ body {
 }
 
 .producto-card:hover .producto-overlay {
-    opacity: 1;
+    opacity: 0;
 }
 
 .overlay-content {
@@ -425,7 +410,7 @@ body {
 }
 
 .tecnica-card:hover::before {
-    opacity: 0.1;
+    opacity: 0;
 }
 
 .tecnica-card:hover {
@@ -701,37 +686,7 @@ body {
     }
 }
 
-/* Efectos especiales para artesanías */
-.craft-texture {
-    position: relative;
-    overflow: hidden;
-}
-
-.craft-texture::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        radial-gradient(circle at 25% 25%, var(--color-craft-gold) 1px, transparent 1px),
-        radial-gradient(circle at 75% 75%, var(--color-craft-accent) 1px, transparent 1px);
-    background-size: 30px 30px, 40px 40px;
-    opacity: 0.1;
-    pointer-events: none;
-}
-
-.weaving-pattern {
-    background-image: 
-        linear-gradient(45deg, var(--color-craft-secondary) 25%, transparent 25%),
-        linear-gradient(-45deg, var(--color-craft-secondary) 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, var(--color-craft-secondary) 75%),
-        linear-gradient(-45deg, transparent 75%, var(--color-craft-secondary) 75%);
-    background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-    opacity: 0.05;
-}
+/* Efectos especiales eliminados para evitar transparencia molesta */
 
 /* Efectos de hover específicos */
 .artesano-card:hover .artesano-info h3 {

@@ -570,7 +570,7 @@ $stmt_rutas->execute();
                             <div class="col-12">
                                 <div class="stat-card">
                                     <div class="table-responsive">
-                                        <table class="table table-hover">
+                                        <table id="palabrasTable" class="table table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>Palabra Kichwa</th>
@@ -636,7 +636,7 @@ $stmt_rutas->execute();
                             <div class="col-12">
                                 <div class="stat-card">
                                     <div class="table-responsive">
-                                        <table class="table table-hover">
+                                        <table id="eventosTable" class="table table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>Imagen</th>
@@ -712,7 +712,7 @@ $stmt_rutas->execute();
                             <div class="col-12">
                                 <div class="stat-card">
                                     <div class="table-responsive">
-                                        <table class="table table-hover">
+                                        <table id="rutasTable" class="table table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>Nombre</th>
@@ -827,8 +827,16 @@ $stmt_rutas->execute();
                                     <textarea class="form-control" name="historia" rows="3"></textarea>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Imagen</label>
-                                    <input type="text" class="form-control" name="imagen" placeholder="nombre_imagen.jpg">
+                                    <label class="form-label">Imagen del Plato</label>
+                                    <div class="input-group">
+                                        <input type="file" class="form-control" id="plato_imagen_file" name="imagen_file" accept="image/*">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="previewImage('plato_imagen_file', 'plato_preview')">
+                                            <i class="fas fa-eye"></i> Vista Previa
+                                        </button>
+                                    </div>
+                                    <div id="plato_preview" class="mt-2"></div>
+                                    <small class="form-text text-muted">O ingresa el nombre del archivo manualmente:</small>
+                                    <input type="text" class="form-control mt-1" name="imagen" placeholder="nombre_imagen.jpg">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Video URL</label>
@@ -1010,6 +1018,75 @@ $stmt_rutas->execute();
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
     <script src="../js/ultra-translation-system.js"></script>
     <script>
+        // Initialize DataTables when document is ready
+        $(document).ready(function() {
+            // Common DataTables configuration
+            const commonConfig = {
+                responsive: true,
+                pageLength: 10,
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel"></i> Excel',
+                        className: 'btn btn-success btn-sm'
+                    },
+                    {
+                        extend: 'csv', 
+                        text: '<i class="fas fa-file-csv"></i> CSV',
+                        className: 'btn btn-info btn-sm'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i> Imprimir',
+                        className: 'btn btn-secondary btn-sm'
+                    }
+                ]
+            };
+
+            // Initialize all tables
+            if ($('#usuariosTable').length) {
+                $('#usuariosTable').DataTable(commonConfig);
+            }
+            
+            if ($('#platosTable').length) {
+                $('#platosTable').DataTable(commonConfig);
+            }
+            
+            if ($('#palabrasTable').length) {
+                $('#palabrasTable').DataTable({
+                    ...commonConfig,
+                    columnDefs: [
+                        { targets: 3, orderable: false }, // Audio column
+                        { targets: 5, orderable: false }  // Actions column
+                    ]
+                });
+            }
+            
+            if ($('#eventosTable').length) {
+                $('#eventosTable').DataTable({
+                    ...commonConfig,
+                    columnDefs: [
+                        { targets: 0, orderable: false }, // Image column
+                        { targets: 6, orderable: false }  // Actions column
+                    ]
+                });
+            }
+            
+            if ($('#rutasTable').length) {
+                $('#rutasTable').DataTable({
+                    ...commonConfig,
+                    columnDefs: [
+                        { targets: 3, orderable: false }, // Map column
+                        { targets: 5, orderable: false }  // Actions column
+                    ]
+                });
+            }
+        });
+
         // Handle language selector
         document.getElementById('language-selector').addEventListener('change', function() {
             const lang = this.value;
@@ -1197,15 +1274,156 @@ $stmt_rutas->execute();
         }
 
         function verEvento(id) {
-            alert('Vista detallada del evento (funcionalidad por implementar)');
+            // Obtener datos del evento y mostrar modal detallado
+            fetch(`admin-handler.php?action=get_evento&id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const evento = data.evento;
+                    showEventoDetail(evento);
+                } else {
+                    alert('Error al cargar el evento: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error de conexión: ' + error.message);
+            });
         }
 
         function verRuta(id) {
-            alert('Vista detallada de la ruta (funcionalidad por implementar)');
+            // Obtener datos de la ruta y mostrar modal detallado
+            fetch(`admin-handler.php?action=get_ruta&id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const ruta = data.ruta;
+                    showRutaDetail(ruta);
+                } else {
+                    alert('Error al cargar la ruta: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error de conexión: ' + error.message);
+            });
         }
 
         function verMapa(url) {
             window.open(url, '_blank');
+        }
+
+        // Funciones para mostrar vistas detalladas
+        function showEventoDetail(evento) {
+            const modalHtml = `
+                <div class="modal fade" id="modalDetalleEvento" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><i class="fas fa-calendar-alt"></i> Vista Detallada del Evento</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        ${evento.imagen ? `<img src="../images/${evento.imagen}" alt="${evento.nombre}" class="img-fluid rounded mb-3">` : '<div class="bg-light rounded p-4 mb-3 text-center"><i class="fas fa-calendar fa-3x text-muted"></i></div>'}
+                                        <h4>${evento.nombre}</h4>
+                                        <p class="text-muted mb-3">${evento.descripcion}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6><i class="fas fa-info-circle"></i> Información del Evento</h6>
+                                        <ul class="list-unstyled">
+                                            <li><strong><i class="fas fa-calendar"></i> Fecha Inicio:</strong> ${new Date(evento.fecha_inicio).toLocaleDateString('es-ES', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'})}</li>
+                                            ${evento.fecha_fin ? `<li><strong><i class="fas fa-calendar-times"></i> Fecha Fin:</strong> ${new Date(evento.fecha_fin).toLocaleDateString('es-ES', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'})}</li>` : ''}
+                                            <li><strong><i class="fas fa-map-marker-alt"></i> Ubicación:</strong> ${evento.ubicacion_texto || 'No especificada'}</li>
+                                            <li><strong><i class="fas fa-user"></i> Creado por:</strong> ${evento.creador_nombre || 'Sistema'}</li>
+                                            <li><strong><i class="fas fa-clock"></i> Fecha de creación:</strong> ${new Date(evento.fecha_creacion).toLocaleDateString('es-ES')}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-warning" onclick="editarEvento(${evento.id})" data-bs-dismiss="modal">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            $('#modalDetalleEvento').remove();
+            
+            // Add modal to body and show
+            $('body').append(modalHtml);
+            $('#modalDetalleEvento').modal('show');
+            
+            // Clean up when modal is hidden
+            $('#modalDetalleEvento').on('hidden.bs.modal', function() {
+                $(this).remove();
+            });
+        }
+
+        function showRutaDetail(ruta) {
+            const modalHtml = `
+                <div class="modal fade" id="modalDetalleRuta" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><i class="fas fa-route"></i> Vista Detallada de la Ruta</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4>${ruta.nombre}</h4>
+                                        <span class="badge bg-${ruta.dificultad === 'baja' ? 'success' : ruta.dificultad === 'media' ? 'warning' : 'danger'} mb-3">
+                                            Dificultad: ${ruta.dificultad || 'No definida'}
+                                        </span>
+                                        <p class="text-muted">${ruta.descripcion}</p>
+                                        ${ruta.mapa_url ? `<button class="btn btn-info btn-sm" onclick="verMapa('${ruta.mapa_url}')"><i class="fas fa-map"></i> Ver en Mapa</button>` : ''}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6><i class="fas fa-info-circle"></i> Información de la Ruta</h6>
+                                        <ul class="list-unstyled">
+                                            <li><strong><i class="fas fa-route"></i> Distancia:</strong> ${ruta.distancia_km ? `${ruta.distancia_km} km` : 'No especificada'}</li>
+                                            <li><strong><i class="fas fa-mountain"></i> Dificultad:</strong> ${ruta.dificultad ? ruta.dificultad.charAt(0).toUpperCase() + ruta.dificultad.slice(1) : 'No definida'}</li>
+                                            <li><strong><i class="fas fa-clock"></i> Fecha de creación:</strong> ${new Date(ruta.fecha_creacion).toLocaleDateString('es-ES')}</li>
+                                        </ul>
+                                        <div class="mt-4">
+                                            <h6><i class="fas fa-chart-bar"></i> Estadísticas</h6>
+                                            <div class="progress mb-2" style="height: 20px;">
+                                                <div class="progress-bar ${ruta.dificultad === 'baja' ? 'bg-success' : ruta.dificultad === 'media' ? 'bg-warning' : 'bg-danger'}" 
+                                                     style="width: ${ruta.dificultad === 'baja' ? '33%' : ruta.dificultad === 'media' ? '66%' : '100%'}">
+                                                    ${ruta.dificultad ? ruta.dificultad.charAt(0).toUpperCase() + ruta.dificultad.slice(1) : 'N/A'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-warning" onclick="editarRuta(${ruta.id})" data-bs-dismiss="modal">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            $('#modalDetalleRuta').remove();
+            
+            // Add modal to body and show
+            $('body').append(modalHtml);
+            $('#modalDetalleRuta').modal('show');
+            
+            // Clean up when modal is hidden
+            $('#modalDetalleRuta').on('hidden.bs.modal', function() {
+                $(this).remove();
+            });
         }
 
         // Edit functions

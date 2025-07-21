@@ -406,7 +406,7 @@ $stmt_rutas->execute();
                     <div class="tab-pane fade" id="usuarios">
                         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                             <h2><i class="fas fa-users"></i> <?php echo $texto['gestion_usuarios'] ?? 'Gestión de Usuarios'; ?></h2>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userModal">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoUsuario">
                                 <i class="fas fa-plus"></i> <?php echo $texto['nuevo_usuario'] ?? 'Nuevo Usuario'; ?>
                             </button>
                         </div>
@@ -447,7 +447,7 @@ $stmt_rutas->execute();
                                             <td><?php echo date('d/m/Y', strtotime($usuario['fecha_registro'])); ?></td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <button class="btn btn-sm btn-outline-primary" onclick="editUser(<?php echo $usuario['id']; ?>)">
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="editarUsuario(<?php echo $usuario['id']; ?>)">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                     <button class="btn btn-sm btn-outline-<?php echo $usuario['activo'] ? 'warning' : 'success'; ?>" 
@@ -561,9 +561,20 @@ $stmt_rutas->execute();
                     <div class="tab-pane fade" id="kichwa">
                         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                             <h2><i class="fas fa-language"></i> <?php echo $texto['gestion_kichwa'] ?? 'Gestión de Vocabulario Kichwa'; ?></h2>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaPalabra">
-                                <i class="fas fa-plus"></i> Nueva Palabra
-                            </button>
+                            <div class="d-flex gap-2">
+                                <div class="input-group" style="width: 300px;">
+                                    <input type="text" class="form-control" id="buscadorKichwa" placeholder="Buscar palabra en kichwa o español...">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="buscarPalabras()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <button class="btn btn-outline-secondary" type="button" onclick="limpiarBusqueda()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevaPalabra">
+                                    <i class="fas fa-plus"></i> Nueva Palabra
+                                </button>
+                            </div>
                         </div>
 
                         <div class="row">
@@ -956,6 +967,65 @@ $stmt_rutas->execute();
         </div>
     </div>
 
+    <!-- Modal Nuevo Usuario -->
+    <div class="modal fade" id="modalNuevoUsuario" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-plus"></i> Nuevo Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="formUsuario">
+                    <div class="modal-body">
+                        <input type="hidden" id="usuario_id" name="id">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre *</label>
+                                    <input type="text" class="form-control" name="nombre" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" class="form-control" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Teléfono</label>
+                                    <input type="tel" class="form-control" name="telefono">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Rol *</label>
+                                    <select class="form-select" name="rol" required>
+                                        <option value="">Seleccionar rol</option>
+                                        <option value="admin">Administrador</option>
+                                        <option value="artesano">Artesano</option>
+                                        <option value="comunitario">Comunitario</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Contraseña *</label>
+                                    <input type="password" class="form-control" name="password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Estado</label>
+                                    <select class="form-select" name="activo">
+                                        <option value="1">Activo</option>
+                                        <option value="0">Inactivo</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Nueva Ruta -->
     <div class="modal fade" id="modalNuevaRuta" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -1143,8 +1213,30 @@ $stmt_rutas->execute();
             }
         }
 
-        function editUser(userId) {
-            console.log('Edit user:', userId);
+        function editarUsuario(userId) {
+            fetch(`admin-handler.php?action=get_user&id=${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const user = data.user;
+                    document.getElementById('usuario_id').value = user.id;
+                    document.querySelector('#formUsuario [name="nombre"]').value = user.nombre;
+                    document.querySelector('#formUsuario [name="email"]').value = user.email;
+                    document.querySelector('#formUsuario [name="telefono"]').value = user.telefono || '';
+                    document.querySelector('#formUsuario [name="rol"]').value = user.rol;
+                    document.querySelector('#formUsuario [name="activo"]').value = user.activo;
+                    document.querySelector('#formUsuario [name="password"]').required = false;
+                    document.querySelector('#modalNuevoUsuario .modal-title').innerHTML = '<i class="fas fa-user-edit"></i> Editar Usuario';
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('modalNuevoUsuario'));
+                    modal.show();
+                } else {
+                    alert('Error al cargar el usuario: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error de conexión: ' + error.message);
+            });
         }
 
         function toggleUserStatus(userId, status) {
@@ -1229,27 +1321,41 @@ $stmt_rutas->execute();
         // Form submission handlers
         document.getElementById('formPlato').addEventListener('submit', function(e) {
             e.preventDefault();
-            submitForm('plato', new FormData(this));
+            const formData = new FormData(this);
+            formData.append('action', 'create_plato');
+            submitForm(formData, 'Plato');
         });
 
         document.getElementById('formPalabra').addEventListener('submit', function(e) {
             e.preventDefault();
-            submitForm('palabra', new FormData(this));
+            const formData = new FormData(this);
+            formData.append('action', 'create_palabra');
+            submitForm(formData, 'Palabra');
         });
 
         document.getElementById('formEvento').addEventListener('submit', function(e) {
             e.preventDefault();
-            submitForm('evento', new FormData(this));
+            const formData = new FormData(this);
+            formData.append('action', 'create_evento');
+            submitForm(formData, 'Evento');
         });
 
         document.getElementById('formRuta').addEventListener('submit', function(e) {
             e.preventDefault();
-            submitForm('ruta', new FormData(this));
+            const formData = new FormData(this);
+            formData.append('action', 'create_ruta');
+            submitForm(formData, 'Ruta');
         });
 
-        function submitForm(type, formData) {
-            const action = `create_${type}`;
-            
+        document.getElementById('formUsuario').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const isEdit = document.getElementById('usuario_id').value !== '';
+            formData.append('action', isEdit ? 'update_user' : 'create_user');
+            submitForm(formData, 'Usuario');
+        });
+
+        function submitForm(formData, entityName) {
             fetch('admin-handler.php', {
                 method: 'POST',
                 body: formData
@@ -1257,7 +1363,7 @@ $stmt_rutas->execute();
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('¡Guardado exitosamente!');
+                    alert(`¡${entityName} guardado exitosamente!`);
                     location.reload();
                 } else {
                     alert('Error: ' + (data.message || 'No se pudo guardar'));
@@ -1428,16 +1534,29 @@ $stmt_rutas->execute();
 
         // Edit functions
         function editarPlato(id) {
-            // Load data and populate modal for editing
             fetch(`admin-handler.php?action=get_plato&id=${id}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     populateForm('formPlato', data.plato);
+                    // Cambiar el evento submit para update
+                    const form = document.getElementById('formPlato');
+                    form.onsubmit = function(e) {
+                        e.preventDefault();
+                        const formData = new FormData(this);
+                        formData.append('action', 'update_plato');
+                        formData.append('id', id);
+                        submitForm(formData, 'Plato');
+                    };
                     document.getElementById('modalNuevoPlato').querySelector('.modal-title').innerHTML = '<i class="fas fa-utensils"></i> Editar Plato';
                     const modal = new bootstrap.Modal(document.getElementById('modalNuevoPlato'));
                     modal.show();
+                } else {
+                    alert('Error al cargar el plato: ' + data.message);
                 }
+            })
+            .catch(error => {
+                alert('Error de conexión: ' + error.message);
             });
         }
 
@@ -1447,10 +1566,24 @@ $stmt_rutas->execute();
             .then(data => {
                 if (data.success) {
                     populateForm('formPalabra', data.palabra);
+                    // Cambiar el evento submit para update
+                    const form = document.getElementById('formPalabra');
+                    form.onsubmit = function(e) {
+                        e.preventDefault();
+                        const formData = new FormData(this);
+                        formData.append('action', 'update_palabra');
+                        formData.append('id', id);
+                        submitForm(formData, 'Palabra');
+                    };
                     document.getElementById('modalNuevaPalabra').querySelector('.modal-title').innerHTML = '<i class="fas fa-language"></i> Editar Palabra';
                     const modal = new bootstrap.Modal(document.getElementById('modalNuevaPalabra'));
                     modal.show();
+                } else {
+                    alert('Error al cargar la palabra: ' + data.message);
                 }
+            })
+            .catch(error => {
+                alert('Error de conexión: ' + error.message);
             });
         }
 
@@ -1460,10 +1593,24 @@ $stmt_rutas->execute();
             .then(data => {
                 if (data.success) {
                     populateForm('formEvento', data.evento);
+                    // Cambiar el evento submit para update
+                    const form = document.getElementById('formEvento');
+                    form.onsubmit = function(e) {
+                        e.preventDefault();
+                        const formData = new FormData(this);
+                        formData.append('action', 'update_evento');
+                        formData.append('id', id);
+                        submitForm(formData, 'Evento');
+                    };
                     document.getElementById('modalNuevoEvento').querySelector('.modal-title').innerHTML = '<i class="fas fa-calendar"></i> Editar Evento';
                     const modal = new bootstrap.Modal(document.getElementById('modalNuevoEvento'));
                     modal.show();
+                } else {
+                    alert('Error al cargar el evento: ' + data.message);
                 }
+            })
+            .catch(error => {
+                alert('Error de conexión: ' + error.message);
             });
         }
 
@@ -1473,10 +1620,24 @@ $stmt_rutas->execute();
             .then(data => {
                 if (data.success) {
                     populateForm('formRuta', data.ruta);
+                    // Cambiar el evento submit para update
+                    const form = document.getElementById('formRuta');
+                    form.onsubmit = function(e) {
+                        e.preventDefault();
+                        const formData = new FormData(this);
+                        formData.append('action', 'update_ruta');
+                        formData.append('id', id);
+                        submitForm(formData, 'Ruta');
+                    };
                     document.getElementById('modalNuevaRuta').querySelector('.modal-title').innerHTML = '<i class="fas fa-route"></i> Editar Ruta';
                     const modal = new bootstrap.Modal(document.getElementById('modalNuevaRuta'));
                     modal.show();
+                } else {
+                    alert('Error al cargar la ruta: ' + data.message);
                 }
+            })
+            .catch(error => {
+                alert('Error de conexión: ' + error.message);
             });
         }
 
@@ -1549,6 +1710,67 @@ $stmt_rutas->execute();
             });
         }
 
+        // Funciones de búsqueda para Vocabulario Kichwa
+        function buscarPalabras() {
+            const termino = document.getElementById('buscadorKichwa').value.trim();
+            if (termino === '') {
+                alert('Por favor ingresa un término de búsqueda');
+                return;
+            }
+
+            // Usar el filtro de DataTables si existe
+            if ($.fn.DataTable.isDataTable('#palabrasTable')) {
+                $('#palabrasTable').DataTable().search(termino).draw();
+            } else {
+                // Filtro manual para las filas de la tabla
+                const tabla = document.getElementById('palabrasTable');
+                const filas = tabla.querySelectorAll('tbody tr');
+                
+                filas.forEach(fila => {
+                    const palabraKichwa = fila.cells[0].textContent.toLowerCase();
+                    const traduccionEspanol = fila.cells[1].textContent.toLowerCase();
+                    const categoria = fila.cells[2].textContent.toLowerCase();
+                    const terminoBusqueda = termino.toLowerCase();
+                    
+                    if (palabraKichwa.includes(terminoBusqueda) || 
+                        traduccionEspanol.includes(terminoBusqueda) || 
+                        categoria.includes(terminoBusqueda)) {
+                        fila.style.display = '';
+                    } else {
+                        fila.style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        function limpiarBusqueda() {
+            document.getElementById('buscadorKichwa').value = '';
+            
+            // Usar el filtro de DataTables si existe
+            if ($.fn.DataTable.isDataTable('#palabrasTable')) {
+                $('#palabrasTable').DataTable().search('').draw();
+            } else {
+                // Mostrar todas las filas
+                const tabla = document.getElementById('palabrasTable');
+                const filas = tabla.querySelectorAll('tbody tr');
+                filas.forEach(fila => {
+                    fila.style.display = '';
+                });
+            }
+        }
+
+        // Permitir búsqueda con Enter
+        document.addEventListener('DOMContentLoaded', function() {
+            const buscador = document.getElementById('buscadorKichwa');
+            if (buscador) {
+                buscador.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        buscarPalabras();
+                    }
+                });
+            }
+        });
+
         // Image preview function
         function previewImage(inputId, previewId) {
             const input = document.getElementById(inputId);
@@ -1595,23 +1817,62 @@ $stmt_rutas->execute();
             document.getElementById('formPlato').reset();
             document.getElementById('plato_preview').innerHTML = '';
             this.querySelector('.modal-title').innerHTML = '<i class="fas fa-utensils"></i> Nuevo Plato';
+            // Restaurar event listener original
+            const form = document.getElementById('formPlato');
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                formData.append('action', 'create_plato');
+                submitForm(formData, 'Plato');
+            };
         });
 
         document.getElementById('modalNuevaPalabra').addEventListener('hidden.bs.modal', function() {
             document.getElementById('formPalabra').reset();
             document.getElementById('palabra_audio_preview').innerHTML = '';
             this.querySelector('.modal-title').innerHTML = '<i class="fas fa-language"></i> Nueva Palabra Kichwa';
+            // Restaurar event listener original
+            const form = document.getElementById('formPalabra');
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                formData.append('action', 'create_palabra');
+                submitForm(formData, 'Palabra');
+            };
         });
 
         document.getElementById('modalNuevoEvento').addEventListener('hidden.bs.modal', function() {
             document.getElementById('formEvento').reset();
             document.getElementById('evento_preview').innerHTML = '';
             this.querySelector('.modal-title').innerHTML = '<i class="fas fa-calendar"></i> Nuevo Evento';
+            // Restaurar event listener original
+            const form = document.getElementById('formEvento');
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                formData.append('action', 'create_evento');
+                submitForm(formData, 'Evento');
+            };
         });
 
         document.getElementById('modalNuevaRuta').addEventListener('hidden.bs.modal', function() {
             document.getElementById('formRuta').reset();
             this.querySelector('.modal-title').innerHTML = '<i class="fas fa-route"></i> Nueva Ruta Turística';
+            // Restaurar event listener original
+            const form = document.getElementById('formRuta');
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                formData.append('action', 'create_ruta');
+                submitForm(formData, 'Ruta');
+            };
+        });
+
+        document.getElementById('modalNuevoUsuario').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('formUsuario').reset();
+            document.getElementById('usuario_id').value = '';
+            document.querySelector('#formUsuario [name="password"]').required = true;
+            this.querySelector('.modal-title').innerHTML = '<i class="fas fa-user-plus"></i> Nuevo Usuario';
         });
     </script>
 </body>

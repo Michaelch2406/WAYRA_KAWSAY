@@ -17,6 +17,43 @@ if ($_SESSION['usuario_rol'] !== 'admin') {
 $database = new Conexion();
 $db = $database->getConnection();
 
+// Función para manejar uploads de archivos
+function handleFileUpload($file, $type) {
+    $allowedImages = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    $allowedAudio = ['mp3', 'wav', 'ogg', 'm4a', 'aac'];
+    $maxSize = 10 * 1024 * 1024; // 10MB
+    
+    if ($file['size'] > $maxSize) {
+        return ['success' => false, 'message' => 'El archivo es demasiado grande (máximo 10MB)'];
+    }
+    
+    $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    
+    if ($type === 'image' && !in_array($fileExtension, $allowedImages)) {
+        return ['success' => false, 'message' => 'Formato de imagen no permitido'];
+    }
+    
+    if ($type === 'audio' && !in_array($fileExtension, $allowedAudio)) {
+        return ['success' => false, 'message' => 'Formato de audio no permitido'];
+    }
+    
+    // Generar nombre único
+    $filename = uniqid() . '_' . time() . '.' . $fileExtension;
+    $uploadDir = $type === 'image' ? '../images/' : '../audio/';
+    $uploadPath = $uploadDir . $filename;
+    
+    // Crear directorio si no existe
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+    
+    if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+        return ['success' => true, 'filename' => $filename, 'path' => $uploadPath];
+    } else {
+        return ['success' => false, 'message' => 'Error al mover el archivo'];
+    }
+}
+
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 
 switch($action) {
@@ -331,6 +368,17 @@ function createPlato($db) {
             return;
         }
         
+        // Manejar upload de imagen
+        if (isset($_FILES['imagen_file']) && $_FILES['imagen_file']['error'] === UPLOAD_ERR_OK) {
+            $uploaded_file = handleFileUpload($_FILES['imagen_file'], 'image');
+            if ($uploaded_file['success']) {
+                $imagen = $uploaded_file['filename'];
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error al subir imagen: ' . $uploaded_file['message']]);
+                return;
+            }
+        }
+        
         $query = "INSERT INTO platos (nombre, descripcion, historia, imagen, video_preparacion_url, categoria, dificultad, tiempo_preparacion) 
                   VALUES (:nombre, :descripcion, :historia, :imagen, :video_preparacion_url, :categoria, :dificultad, :tiempo_preparacion)";
         $stmt = $db->prepare($query);
@@ -344,7 +392,7 @@ function createPlato($db) {
         $stmt->bindParam(':tiempo_preparacion', $tiempo_preparacion);
         
         if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Plato creado exitosamente']);
+            echo json_encode(['success' => true, 'message' => 'Plato creado exitosamente', 'id' => $db->lastInsertId()]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error al crear el plato']);
         }
@@ -418,6 +466,17 @@ function createPalabra($db) {
             return;
         }
         
+        // Manejar upload de audio
+        if (isset($_FILES['audio_file']) && $_FILES['audio_file']['error'] === UPLOAD_ERR_OK) {
+            $uploaded_file = handleFileUpload($_FILES['audio_file'], 'audio');
+            if ($uploaded_file['success']) {
+                $audio_url = $uploaded_file['filename'];
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error al subir audio: ' . $uploaded_file['message']]);
+                return;
+            }
+        }
+        
         $query = "INSERT INTO palabras_kichwa (palabra_kichwa, traduccion_espanol, categoria, audio_url) 
                   VALUES (:palabra_kichwa, :traduccion_espanol, :categoria, :audio_url)";
         $stmt = $db->prepare($query);
@@ -427,7 +486,7 @@ function createPalabra($db) {
         $stmt->bindParam(':audio_url', $audio_url);
         
         if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Palabra creada exitosamente']);
+            echo json_encode(['success' => true, 'message' => 'Palabra creada exitosamente', 'id' => $db->lastInsertId()]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error al crear la palabra']);
         }
@@ -504,6 +563,17 @@ function createEvento($db) {
             return;
         }
         
+        // Manejar upload de imagen
+        if (isset($_FILES['imagen_file']) && $_FILES['imagen_file']['error'] === UPLOAD_ERR_OK) {
+            $uploaded_file = handleFileUpload($_FILES['imagen_file'], 'image');
+            if ($uploaded_file['success']) {
+                $imagen = $uploaded_file['filename'];
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error al subir imagen: ' . $uploaded_file['message']]);
+                return;
+            }
+        }
+        
         $query = "INSERT INTO eventos (nombre, descripcion, fecha_inicio, fecha_fin, ubicacion_texto, imagen, id_usuario_creador) 
                   VALUES (:nombre, :descripcion, :fecha_inicio, :fecha_fin, :ubicacion_texto, :imagen, :id_usuario_creador)";
         $stmt = $db->prepare($query);
@@ -516,7 +586,7 @@ function createEvento($db) {
         $stmt->bindParam(':id_usuario_creador', $id_usuario_creador);
         
         if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Evento creado exitosamente']);
+            echo json_encode(['success' => true, 'message' => 'Evento creado exitosamente', 'id' => $db->lastInsertId()]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error al crear el evento']);
         }
@@ -861,6 +931,32 @@ function updatePlato($db) {
             return;
         }
         
+        // Obtener imagen actual
+        $query_current = "SELECT imagen FROM platos WHERE id = :id";
+        $stmt_current = $db->prepare($query_current);
+        $stmt_current->bindParam(':id', $id);
+        $stmt_current->execute();
+        $current_data = $stmt_current->fetch(PDO::FETCH_ASSOC);
+        $current_image = $current_data['imagen'] ?? '';
+        
+        // Manejar upload de nueva imagen
+        if (isset($_FILES['imagen_file']) && $_FILES['imagen_file']['error'] === UPLOAD_ERR_OK) {
+            $uploaded_file = handleFileUpload($_FILES['imagen_file'], 'image');
+            if ($uploaded_file['success']) {
+                // Eliminar imagen anterior si existe
+                if ($current_image && file_exists('../images/' . $current_image)) {
+                    unlink('../images/' . $current_image);
+                }
+                $imagen = $uploaded_file['filename'];
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error al subir imagen: ' . $uploaded_file['message']]);
+                return;
+            }
+        } else if (empty($imagen)) {
+            // Si no se subió archivo nuevo y no se especificó nombre, mantener imagen actual
+            $imagen = $current_image;
+        }
+        
         $query = "UPDATE platos SET nombre = :nombre, descripcion = :descripcion, historia = :historia, 
                   imagen = :imagen, video_preparacion_url = :video_preparacion_url, categoria = :categoria, 
                   dificultad = :dificultad, tiempo_preparacion = :tiempo_preparacion WHERE id = :id";
@@ -911,6 +1007,32 @@ function updatePalabra($db) {
         if (!$id || !$palabra_kichwa || !$traduccion_espanol) {
             echo json_encode(['success' => false, 'message' => 'ID, palabra kichwa y traducción son requeridos']);
             return;
+        }
+        
+        // Obtener audio actual
+        $query_current = "SELECT audio_url FROM palabras_kichwa WHERE id = :id";
+        $stmt_current = $db->prepare($query_current);
+        $stmt_current->bindParam(':id', $id);
+        $stmt_current->execute();
+        $current_data = $stmt_current->fetch(PDO::FETCH_ASSOC);
+        $current_audio = $current_data['audio_url'] ?? '';
+        
+        // Manejar upload de nuevo audio
+        if (isset($_FILES['audio_file']) && $_FILES['audio_file']['error'] === UPLOAD_ERR_OK) {
+            $uploaded_file = handleFileUpload($_FILES['audio_file'], 'audio');
+            if ($uploaded_file['success']) {
+                // Eliminar audio anterior si existe
+                if ($current_audio && file_exists('../audio/' . $current_audio)) {
+                    unlink('../audio/' . $current_audio);
+                }
+                $audio_url = $uploaded_file['filename'];
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error al subir audio: ' . $uploaded_file['message']]);
+                return;
+            }
+        } else if (empty($audio_url)) {
+            // Si no se subió archivo nuevo y no se especificó nombre, mantener audio actual
+            $audio_url = $current_audio;
         }
         
         $query = "UPDATE palabras_kichwa SET palabra_kichwa = :palabra_kichwa, traduccion_espanol = :traduccion_espanol, 

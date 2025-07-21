@@ -77,6 +77,47 @@ switch($action) {
         deleteRuta($db);
         break;
     
+    // New CRUD operations for users management
+    case 'create_user':
+        createUser($db);
+        break;
+    case 'get_user':
+        getUser($db);
+        break;
+    case 'update_user':
+        updateUser($db);
+        break;
+    case 'update_plato':
+        updatePlato($db);
+        break;
+    case 'update_palabra':
+        updatePalabra($db);
+        break;
+    case 'update_evento':
+        updateEvento($db);
+        break;
+    case 'update_ruta':
+        updateRuta($db);
+        break;
+    case 'upload_file':
+        uploadFile($db);
+        break;
+    case 'get_all_users':
+        getAllUsers($db);
+        break;
+    case 'get_all_platos':
+        getAllPlatos($db);
+        break;
+    case 'get_all_palabras':
+        getAllPalabras($db);
+        break;
+    case 'get_all_eventos':
+        getAllEventos($db);
+        break;
+    case 'get_all_rutas':
+        getAllRutas($db);
+        break;
+    
     default:
         echo json_encode(['success' => false, 'message' => 'Acción no válida']);
 }
@@ -614,6 +655,467 @@ function deleteRuta($db) {
             echo json_encode(['success' => true, 'message' => 'Ruta eliminada exitosamente']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error al eliminar la ruta']);
+        }
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+// User Management Functions
+function createUser($db) {
+    try {
+        $nombre = $_POST['nombre'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
+        $telefono = $_POST['telefono'] ?? '';
+        $rol = $_POST['rol'] ?? 'comunitario';
+        
+        if (!$nombre || !$email || !$password) {
+            echo json_encode(['success' => false, 'message' => 'Nombre, email y contraseña son requeridos']);
+            return;
+        }
+        
+        // Verify email doesn't exist
+        $query_check = "SELECT COUNT(*) as count FROM usuarios WHERE email = :email";
+        $stmt_check = $db->prepare($query_check);
+        $stmt_check->bindParam(':email', $email);
+        $stmt_check->execute();
+        $result = $stmt_check->fetch(PDO::FETCH_ASSOC);
+        
+        if ($result['count'] > 0) {
+            echo json_encode(['success' => false, 'message' => 'El email ya está registrado']);
+            return;
+        }
+        
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        
+        $db->beginTransaction();
+        
+        try {
+            $query = "INSERT INTO usuarios (nombre, email, password, telefono, rol, activo) 
+                      VALUES (:nombre, :email, :password, :telefono, :rol, 1)";
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':nombre', $nombre);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':password', $hashed_password);
+            $stmt->bindParam(':telefono', $telefono);
+            $stmt->bindParam(':rol', $rol);
+            $stmt->execute();
+            
+            $user_id = $db->lastInsertId();
+            
+            // If role is artesano, create artisan profile
+            if ($rol === 'artesano') {
+                $query_artesano = "INSERT INTO artesanos (id_usuario, historia, especialidad) 
+                                   VALUES (:user_id, 'Perfil en construcción...', 'Sin especialidad definida')";
+                $stmt_artesano = $db->prepare($query_artesano);
+                $stmt_artesano->bindParam(':user_id', $user_id);
+                $stmt_artesano->execute();
+            }
+            
+            $db->commit();
+            echo json_encode(['success' => true, 'message' => 'Usuario creado exitosamente']);
+            
+        } catch (Exception $e) {
+            $db->rollback();
+            throw $e;
+        }
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+function getUser($db) {
+    try {
+        $id = $_GET['id'] ?? 0;
+        
+        if (!$id) {
+            echo json_encode(['success' => false, 'message' => 'ID requerido']);
+            return;
+        }
+        
+        $query = "SELECT id, nombre, email, telefono, rol, activo, fecha_registro FROM usuarios WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($user) {
+            echo json_encode(['success' => true, 'user' => $user]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Usuario no encontrado']);
+        }
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+function updateUser($db) {
+    try {
+        $id = $_POST['id'] ?? 0;
+        $nombre = $_POST['nombre'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $telefono = $_POST['telefono'] ?? '';
+        $rol = $_POST['rol'] ?? '';
+        $password = $_POST['password'] ?? '';
+        
+        if (!$id || !$nombre || !$email) {
+            echo json_encode(['success' => false, 'message' => 'ID, nombre y email son requeridos']);
+            return;
+        }
+        
+        // Check if email is already used by another user
+        $query_check = "SELECT COUNT(*) as count FROM usuarios WHERE email = :email AND id != :id";
+        $stmt_check = $db->prepare($query_check);
+        $stmt_check->bindParam(':email', $email);
+        $stmt_check->bindParam(':id', $id);
+        $stmt_check->execute();
+        $result = $stmt_check->fetch(PDO::FETCH_ASSOC);
+        
+        if ($result['count'] > 0) {
+            echo json_encode(['success' => false, 'message' => 'El email ya está registrado por otro usuario']);
+            return;
+        }
+        
+        $db->beginTransaction();
+        
+        try {
+            if (!empty($password)) {
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $query = "UPDATE usuarios SET nombre = :nombre, email = :email, telefono = :telefono, rol = :rol, password = :password WHERE id = :id";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(':password', $hashed_password);
+            } else {
+                $query = "UPDATE usuarios SET nombre = :nombre, email = :email, telefono = :telefono, rol = :rol WHERE id = :id";
+                $stmt = $db->prepare($query);
+            }
+            
+            $stmt->bindParam(':nombre', $nombre);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':telefono', $telefono);
+            $stmt->bindParam(':rol', $rol);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            
+            // If new role is artesano and no profile exists, create one
+            if ($rol === 'artesano') {
+                $query_check_artesano = "SELECT id FROM artesanos WHERE id_usuario = :user_id";
+                $stmt_check_artesano = $db->prepare($query_check_artesano);
+                $stmt_check_artesano->bindParam(':user_id', $id);
+                $stmt_check_artesano->execute();
+                
+                if ($stmt_check_artesano->rowCount() === 0) {
+                    $query_artesano = "INSERT INTO artesanos (id_usuario, historia, especialidad) 
+                                       VALUES (:user_id, 'Perfil en construcción...', 'Sin especialidad definida')";
+                    $stmt_artesano = $db->prepare($query_artesano);
+                    $stmt_artesano->bindParam(':user_id', $id);
+                    $stmt_artesano->execute();
+                }
+            }
+            
+            $db->commit();
+            echo json_encode(['success' => true, 'message' => 'Usuario actualizado exitosamente']);
+            
+        } catch (Exception $e) {
+            $db->rollback();
+            throw $e;
+        }
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+function getAllUsers($db) {
+    try {
+        $query = "SELECT id, nombre, email, telefono, rol, activo, fecha_registro FROM usuarios ORDER BY fecha_registro DESC";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo json_encode(['success' => true, 'users' => $users]);
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+function updatePlato($db) {
+    try {
+        $id = $_POST['id'] ?? 0;
+        $nombre = $_POST['nombre'] ?? '';
+        $descripcion = $_POST['descripcion'] ?? '';
+        $historia = $_POST['historia'] ?? '';
+        $imagen = $_POST['imagen'] ?? '';
+        $video_preparacion_url = $_POST['video_preparacion_url'] ?? '';
+        $categoria = $_POST['categoria'] ?? 'tradicional';
+        $dificultad = $_POST['dificultad'] ?? 'medio';
+        $tiempo_preparacion = $_POST['tiempo_preparacion'] ?? null;
+        
+        if (!$id || !$nombre || !$descripcion) {
+            echo json_encode(['success' => false, 'message' => 'ID, nombre y descripción son requeridos']);
+            return;
+        }
+        
+        $query = "UPDATE platos SET nombre = :nombre, descripcion = :descripcion, historia = :historia, 
+                  imagen = :imagen, video_preparacion_url = :video_preparacion_url, categoria = :categoria, 
+                  dificultad = :dificultad, tiempo_preparacion = :tiempo_preparacion WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':descripcion', $descripcion);
+        $stmt->bindParam(':historia', $historia);
+        $stmt->bindParam(':imagen', $imagen);
+        $stmt->bindParam(':video_preparacion_url', $video_preparacion_url);
+        $stmt->bindParam(':categoria', $categoria);
+        $stmt->bindParam(':dificultad', $dificultad);
+        $stmt->bindParam(':tiempo_preparacion', $tiempo_preparacion);
+        
+        if ($stmt->execute()) {
+            echo json_encode(['success' => true, 'message' => 'Plato actualizado exitosamente']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error al actualizar el plato']);
+        }
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+function getAllPlatos($db) {
+    try {
+        $query = "SELECT * FROM platos ORDER BY fecha_creacion DESC";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        $platos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo json_encode(['success' => true, 'platos' => $platos]);
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+function updatePalabra($db) {
+    try {
+        $id = $_POST['id'] ?? 0;
+        $palabra_kichwa = $_POST['palabra_kichwa'] ?? '';
+        $traduccion_espanol = $_POST['traduccion_espanol'] ?? '';
+        $categoria = $_POST['categoria'] ?? '';
+        $audio_url = $_POST['audio_url'] ?? '';
+        
+        if (!$id || !$palabra_kichwa || !$traduccion_espanol) {
+            echo json_encode(['success' => false, 'message' => 'ID, palabra kichwa y traducción son requeridos']);
+            return;
+        }
+        
+        $query = "UPDATE palabras_kichwa SET palabra_kichwa = :palabra_kichwa, traduccion_espanol = :traduccion_espanol, 
+                  categoria = :categoria, audio_url = :audio_url WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':palabra_kichwa', $palabra_kichwa);
+        $stmt->bindParam(':traduccion_espanol', $traduccion_espanol);
+        $stmt->bindParam(':categoria', $categoria);
+        $stmt->bindParam(':audio_url', $audio_url);
+        
+        if ($stmt->execute()) {
+            echo json_encode(['success' => true, 'message' => 'Palabra actualizada exitosamente']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error al actualizar la palabra']);
+        }
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+function getAllPalabras($db) {
+    try {
+        $query = "SELECT * FROM palabras_kichwa ORDER BY fecha_creacion DESC";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        $palabras = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo json_encode(['success' => true, 'palabras' => $palabras]);
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+function updateEvento($db) {
+    try {
+        $id = $_POST['id'] ?? 0;
+        $nombre = $_POST['nombre'] ?? '';
+        $descripcion = $_POST['descripcion'] ?? '';
+        $fecha_inicio = $_POST['fecha_inicio'] ?? '';
+        $fecha_fin = $_POST['fecha_fin'] ?? null;
+        $ubicacion_texto = $_POST['ubicacion_texto'] ?? '';
+        $imagen = $_POST['imagen'] ?? '';
+        
+        if (!$id || !$nombre || !$descripcion || !$fecha_inicio) {
+            echo json_encode(['success' => false, 'message' => 'ID, nombre, descripción y fecha de inicio son requeridos']);
+            return;
+        }
+        
+        $query = "UPDATE eventos SET nombre = :nombre, descripcion = :descripcion, fecha_inicio = :fecha_inicio, 
+                  fecha_fin = :fecha_fin, ubicacion_texto = :ubicacion_texto, imagen = :imagen WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':descripcion', $descripcion);
+        $stmt->bindParam(':fecha_inicio', $fecha_inicio);
+        $stmt->bindParam(':fecha_fin', $fecha_fin);
+        $stmt->bindParam(':ubicacion_texto', $ubicacion_texto);
+        $stmt->bindParam(':imagen', $imagen);
+        
+        if ($stmt->execute()) {
+            echo json_encode(['success' => true, 'message' => 'Evento actualizado exitosamente']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error al actualizar el evento']);
+        }
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+function getAllEventos($db) {
+    try {
+        $query = "SELECT e.*, u.nombre as creador_nombre FROM eventos e 
+                  LEFT JOIN usuarios u ON e.id_usuario_creador = u.id 
+                  ORDER BY e.fecha_inicio DESC";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo json_encode(['success' => true, 'eventos' => $eventos]);
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+function updateRuta($db) {
+    try {
+        $id = $_POST['id'] ?? 0;
+        $nombre = $_POST['nombre'] ?? '';
+        $descripcion = $_POST['descripcion'] ?? '';
+        $distancia_km = $_POST['distancia_km'] ?? null;
+        $dificultad = $_POST['dificultad'] ?? null;
+        $mapa_url = $_POST['mapa_url'] ?? '';
+        
+        if (!$id || !$nombre || !$descripcion) {
+            echo json_encode(['success' => false, 'message' => 'ID, nombre y descripción son requeridos']);
+            return;
+        }
+        
+        $query = "UPDATE rutas_turisticas SET nombre = :nombre, descripcion = :descripcion, 
+                  distancia_km = :distancia_km, dificultad = :dificultad, mapa_url = :mapa_url WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':descripcion', $descripcion);
+        $stmt->bindParam(':distancia_km', $distancia_km);
+        $stmt->bindParam(':dificultad', $dificultad);
+        $stmt->bindParam(':mapa_url', $mapa_url);
+        
+        if ($stmt->execute()) {
+            echo json_encode(['success' => true, 'message' => 'Ruta actualizada exitosamente']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error al actualizar la ruta']);
+        }
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+function getAllRutas($db) {
+    try {
+        $query = "SELECT * FROM rutas_turisticas ORDER BY fecha_creacion DESC";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        $rutas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo json_encode(['success' => true, 'rutas' => $rutas]);
+        
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
+    }
+}
+
+function uploadFile($db) {
+    try {
+        $uploadDir = '../uploads/';
+        
+        // Create uploads directory if it doesn't exist
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+        
+        if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+            echo json_encode(['success' => false, 'message' => 'Error al subir el archivo']);
+            return;
+        }
+        
+        $file = $_FILES['file'];
+        $fileName = $file['name'];
+        $fileSize = $file['size'];
+        $fileTmpName = $file['tmp_name'];
+        $fileType = $file['type'];
+        
+        // Get file extension
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        
+        // Define allowed extensions based on file type
+        $allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $allowedAudioExtensions = ['mp3', 'wav', 'ogg', 'aac', 'm4a'];
+        
+        $fileCategory = '';
+        if (in_array($fileExtension, $allowedImageExtensions)) {
+            $fileCategory = 'image';
+            $uploadSubDir = $uploadDir . 'images/';
+        } elseif (in_array($fileExtension, $allowedAudioExtensions)) {
+            $fileCategory = 'audio';
+            $uploadSubDir = $uploadDir . 'audio/';
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Tipo de archivo no permitido']);
+            return;
+        }
+        
+        // Create subdirectory if it doesn't exist
+        if (!file_exists($uploadSubDir)) {
+            mkdir($uploadSubDir, 0777, true);
+        }
+        
+        // Check file size (10MB max)
+        if ($fileSize > 10 * 1024 * 1024) {
+            echo json_encode(['success' => false, 'message' => 'El archivo es demasiado grande (máximo 10MB)']);
+            return;
+        }
+        
+        // Generate unique filename
+        $newFileName = uniqid() . '_' . time() . '.' . $fileExtension;
+        $uploadPath = $uploadSubDir . $newFileName;
+        
+        if (move_uploaded_file($fileTmpName, $uploadPath)) {
+            // Return relative path for database storage
+            $relativePath = 'uploads/' . $fileCategory . 's/' . $newFileName;
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Archivo subido exitosamente',
+                'filename' => $newFileName,
+                'path' => $relativePath,
+                'url' => '../' . $relativePath,
+                'type' => $fileCategory
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error al mover el archivo']);
         }
         
     } catch (Exception $e) {

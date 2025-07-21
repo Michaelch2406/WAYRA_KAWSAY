@@ -320,9 +320,13 @@ $stats_stmt = $kichwa->read();
                         </thead>
                         <tbody>
                             <?php 
-                            // Usar datos paginados
-                            $stmt = $kichwa->read($rows_per_page, $offset);
+                            // Usar el statement ya creado arriba (línea 22)
+                            // Re-ejecutar para obtener datos frescos
+                            $stmt->execute();
+                            $row_count = 0;
+                            
                             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): 
+                                $row_count++;
                             ?>
                                 <tr class="kichwa-row">
                                     <td class="kichwa-word">
@@ -332,10 +336,10 @@ $stats_stmt = $kichwa->read();
                                         <?php echo htmlspecialchars($row['traduccion_espanol']); ?>
                                     </td>
                                     <td class="audio-cell">
-                                        <?php if (!empty($row['audio'])): ?>
+                                        <?php if (!empty($row['audio_url'])): ?>
                                             <audio controls preload="none">
-                                                <source src="audio/<?php echo htmlspecialchars($row['audio']); ?>" type="audio/mpeg">
-                                                <source src="audio/<?php echo htmlspecialchars($row['audio']); ?>" type="audio/wav">
+                                                <source src="audio/<?php echo htmlspecialchars($row['audio_url']); ?>" type="audio/mpeg">
+                                                <source src="audio/<?php echo htmlspecialchars($row['audio_url']); ?>" type="audio/wav">
                                                 Tu navegador no soporta el elemento de audio.
                                             </audio>
                                         <?php else: ?>
@@ -346,6 +350,15 @@ $stats_stmt = $kichwa->read();
                                     </td>
                                 </tr>
                             <?php endwhile; ?>
+                            <?php if ($row_count === 0): ?>
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted" style="padding: 2rem;">
+                                        <i class="fas fa-search fa-2x mb-3"></i><br>
+                                        <em>No se encontraron palabras en esta página.</em><br>
+                                        <small>Total disponible: <?php echo $total_words; ?> palabras</small>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -571,10 +584,19 @@ $stats_stmt = $kichwa->read();
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="js/ultra-translation-system.js"></script>
-    <script src="js/ultra-translation-test.js"></script>
     <script src="js/kichwa.js"></script>
-    <script src="js/script.js"></script>
+    <!-- Script simple para selector de idioma -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const languageSelector = document.getElementById('language-selector');
+        if (languageSelector) {
+            languageSelector.addEventListener('change', function() {
+                const selectedLanguage = this.value;
+                window.location.href = window.location.pathname + '?lang=' + selectedLanguage;
+            });
+        }
+    });
+    </script>
 </body>
 </html>
 

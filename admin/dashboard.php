@@ -18,7 +18,7 @@ if ($_SESSION['usuario_rol'] !== 'admin') {
 $database = new Conexion();
 $db = $database->getConnection();
 
-// Obtener estadísticas generales
+// Obtener estadísticas generales incluyendo platos y rutas
 $query_stats = "SELECT 
     (SELECT COUNT(*) FROM usuarios) as total_usuarios,
     (SELECT COUNT(*) FROM usuarios WHERE rol = 'comunitario') as total_comunitarios,
@@ -27,7 +27,9 @@ $query_stats = "SELECT
     (SELECT COUNT(*) FROM contenido WHERE estado = 'aprobado') as contenido_aprobado,
     (SELECT COUNT(*) FROM productos_artesanales) as total_productos,
     (SELECT COUNT(*) FROM eventos) as total_eventos,
-    (SELECT COUNT(*) FROM palabras_kichwa) as total_palabras";
+    (SELECT COUNT(*) FROM palabras_kichwa) as total_palabras,
+    (SELECT COUNT(*) FROM platos) as total_platos,
+    (SELECT COUNT(*) FROM rutas_turisticas) as total_rutas";
 
 $stmt_stats = $db->prepare($query_stats);
 $stmt_stats->execute();
@@ -52,6 +54,7 @@ $stmt_usuarios->execute();
 $query_platos = "SELECT * FROM platos ORDER BY fecha_creacion DESC";
 $stmt_platos = $db->prepare($query_platos);
 $stmt_platos->execute();
+
 
 // Obtener palabras kichwa
 $query_kichwa = "SELECT * FROM palabras_kichwa ORDER BY fecha_creacion DESC";
@@ -80,6 +83,11 @@ $stmt_rutas->execute();
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
     
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -405,7 +413,7 @@ $stmt_rutas->execute();
 
                         <div class="user-table">
                             <div class="table-responsive">
-                                <table class="table table-hover mb-0">
+                                <table id="usuariosTable" class="table table-hover mb-0">
                                     <thead class="table-dark">
                                         <tr>
                                             <th><?php echo $texto['id'] ?? 'ID'; ?></th>
@@ -486,7 +494,7 @@ $stmt_rutas->execute();
                             <div class="col-12">
                                 <div class="stat-card">
                                     <div class="table-responsive">
-                                        <table class="table table-hover">
+                                        <table id="platosTable" class="table table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>Imagen</th>
@@ -861,8 +869,16 @@ $stmt_rutas->execute();
                             <input type="text" class="form-control" name="categoria" placeholder="ej: familia, naturaleza, colores">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">URL del Audio</label>
-                            <input type="text" class="form-control" name="audio_url" placeholder="archivo_audio.mp3">
+                            <label class="form-label">Audio de Pronunciación</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control" id="palabra_audio_file" name="audio_file" accept="audio/*">
+                                <button class="btn btn-outline-secondary" type="button" onclick="previewAudio('palabra_audio_file', 'palabra_audio_preview')">
+                                    <i class="fas fa-play"></i> Escuchar
+                                </button>
+                            </div>
+                            <div id="palabra_audio_preview" class="mt-2"></div>
+                            <small class="form-text text-muted">O ingresa la URL del archivo manualmente:</small>
+                            <input type="text" class="form-control mt-1" name="audio_url" placeholder="archivo_audio.mp3">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -909,8 +925,16 @@ $stmt_rutas->execute();
                                     <textarea class="form-control" name="descripcion" rows="6" required></textarea>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Imagen</label>
-                                    <input type="text" class="form-control" name="imagen" placeholder="nombre_imagen.jpg">
+                                    <label class="form-label">Imagen del Evento</label>
+                                    <div class="input-group">
+                                        <input type="file" class="form-control" id="evento_imagen_file" name="imagen_file" accept="image/*">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="previewImage('evento_imagen_file', 'evento_preview')">
+                                            <i class="fas fa-eye"></i> Vista Previa
+                                        </button>
+                                    </div>
+                                    <div id="evento_preview" class="mt-2"></div>
+                                    <small class="form-text text-muted">O ingresa el nombre del archivo manualmente:</small>
+                                    <input type="text" class="form-control mt-1" name="imagen" placeholder="nombre_imagen.jpg">
                                 </div>
                             </div>
                         </div>
@@ -976,6 +1000,14 @@ $stmt_rutas->execute();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
     <script src="../js/ultra-translation-system.js"></script>
     <script>
         // Handle language selector
@@ -1299,19 +1331,63 @@ $stmt_rutas->execute();
             });
         }
 
+        // Image preview function
+        function previewImage(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `
+                        <div class="mt-2">
+                            <img src="${e.target.result}" alt="Vista previa" style="max-width: 200px; max-height: 150px;" class="img-thumbnail">
+                            <br><small class="text-muted">${input.files[0].name}</small>
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Audio file selection for Kichwa words
+        function previewAudio(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const audio = new Audio();
+                audio.src = URL.createObjectURL(file);
+                
+                preview.innerHTML = `
+                    <div class="mt-2">
+                        <audio controls style="width: 100%;">
+                            <source src="${audio.src}" type="${file.type}">
+                            Tu navegador no soporta el elemento audio.
+                        </audio>
+                        <br><small class="text-muted">${file.name}</small>
+                    </div>
+                `;
+            }
+        }
+
         // Reset forms when modals are hidden
         document.getElementById('modalNuevoPlato').addEventListener('hidden.bs.modal', function() {
             document.getElementById('formPlato').reset();
+            document.getElementById('plato_preview').innerHTML = '';
             this.querySelector('.modal-title').innerHTML = '<i class="fas fa-utensils"></i> Nuevo Plato';
         });
 
         document.getElementById('modalNuevaPalabra').addEventListener('hidden.bs.modal', function() {
             document.getElementById('formPalabra').reset();
+            document.getElementById('palabra_audio_preview').innerHTML = '';
             this.querySelector('.modal-title').innerHTML = '<i class="fas fa-language"></i> Nueva Palabra Kichwa';
         });
 
         document.getElementById('modalNuevoEvento').addEventListener('hidden.bs.modal', function() {
             document.getElementById('formEvento').reset();
+            document.getElementById('evento_preview').innerHTML = '';
             this.querySelector('.modal-title').innerHTML = '<i class="fas fa-calendar"></i> Nuevo Evento';
         });
 

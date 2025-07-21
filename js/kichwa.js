@@ -1,8 +1,7 @@
 // JavaScript para funcionalidades específicas de la página de Kichwa - Adaptado del patrón de sabores
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar todas las funcionalidades
-    initLanguageSelector();
+    // Inicializar todas las funcionalidades (removido initLanguageSelector para evitar conflictos)
     initScrollEffects();
     initNavbarEffects();
     initFilterSystem();
@@ -14,8 +13,27 @@ document.addEventListener('DOMContentLoaded', function() {
     initScrollAnimations();
     initResponsiveFeatures();
     
-    console.log('Kichwa page initialized with sabores pattern - Imbabura, Ecuador');
+    console.log('Kichwa page initialized - Imbabura, Ecuador');
 });
+
+// Función para manejar el selector de idioma
+function initLanguageSelector() {
+    const languageSelector = document.getElementById('language-selector');
+    
+    if (languageSelector) {
+        languageSelector.addEventListener('change', function() {
+            const selectedLang = this.value;
+            
+            // Mostrar indicador de carga
+            showLoadingIndicator();
+            
+            // Simular cambio de idioma (en una implementación real, esto redirigiría)
+            setTimeout(() => {
+                window.location.href = `?lang=${selectedLang}`;
+            }, 500);
+        });
+    }
+}
 
 
 // Efectos de scroll (heredado del patrón de sabores)
@@ -162,28 +180,18 @@ function showCulturalContent(tableRows, culturalCards) {
     });
 }
 
-// Animaciones de tabla mejoradas
+// Animaciones de tabla simplificadas (sin efectos hover)
 function initTableAnimations() {
     const tableRows = document.querySelectorAll('.kichwa-row');
     
     tableRows.forEach((row, index) => {
-        // Animación de entrada escalonada
-        setTimeout(() => {
-            row.classList.add('fade-in');
-        }, index * 50);
+        // Asegurar visibilidad
+        row.style.opacity = '1';
+        row.style.visibility = 'visible';
+        row.style.display = 'table-row';
         
-        // Efectos hover mejorados
-        row.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.02)';
-            this.style.boxShadow = '0 5px 15px rgba(139, 69, 19, 0.2)';
-            this.classList.add('sparkle');
-        });
-        
-        row.addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
-            this.style.boxShadow = 'none';
-            this.classList.remove('sparkle');
-        });
+        // Animación de entrada suave
+        row.classList.add('fade-in');
         
         // Click para resaltar palabra
         row.addEventListener('click', function() {
@@ -489,24 +497,13 @@ function hideSuggestions() {
     }
 }
 
-// Galería cultural mejorada
+// Galería cultural simplificada
 function initCulturalGallery() {
     const culturalCards = document.querySelectorAll('.cultural-card');
     
     culturalCards.forEach((card, index) => {
-        // Animación de entrada escalonada
-        setTimeout(() => {
-            card.classList.add('fade-in');
-        }, index * 100);
-        
-        // Efectos hover adicionales
-        card.addEventListener('mouseenter', function() {
-            this.classList.add('sparkle');
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.classList.remove('sparkle');
-        });
+        // Animación de entrada simple
+        card.classList.add('fade-in');
         
         // Click para mostrar información
         card.addEventListener('click', function() {

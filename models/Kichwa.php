@@ -16,18 +16,13 @@ class Kichwa {
     function read($limit = null, $offset = 0) {
         $query = "SELECT id, palabra_kichwa, traduccion_espanol, audio_url, categoria, fecha_creacion FROM " . $this->table_name . " ORDER BY palabra_kichwa ASC";
         
-        if ($limit !== null) {
-            $query .= " LIMIT :limit OFFSET :offset";
+        if ($limit !== null && $limit > 0) {
+            $query .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
         }
         
         $stmt = $this->conn->prepare($query);
-        
-        if ($limit !== null) {
-            $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-        }
-        
         $stmt->execute();
+        
         return $stmt;
     }
 

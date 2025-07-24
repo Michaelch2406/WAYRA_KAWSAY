@@ -1,4 +1,4 @@
-<?php
+                                                               <?php
 session_start();
 include_once '../config/global.php';
 include_once '../config/Conexion.php';

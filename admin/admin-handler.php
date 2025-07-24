@@ -362,12 +362,25 @@ function createPlato($db) {
         $categoria = $_POST['categoria'] ?? 'tradicional';
         $dificultad = $_POST['dificultad'] ?? 'medio';
         $tiempo_preparacion = $_POST['tiempo_preparacion'] ?? null;
-        
+
         if (!$nombre || !$descripcion) {
             echo json_encode(['success' => false, 'message' => 'Nombre y descripción son requeridos']);
             return;
         }
-        
+
+        // Verificar si ya existe un plato con el mismo nombre
+        $query_check = "SELECT id FROM platos WHERE nombre = :nombre";
+        $stmt_check = $db->prepare($query_check);
+        $stmt_check->bindParam(':nombre', $nombre);
+        $stmt_check->execute();
+        $existing_plato = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+        if ($existing_plato) {
+            // Si existe, actualizarlo en lugar de crear uno nuevo
+            $_POST['id'] = $existing_plato['id'];
+            return updatePlato($db);
+        }
+
         // Manejar upload de imagen
         if (isset($_FILES['imagen_file']) && $_FILES['imagen_file']['error'] === UPLOAD_ERR_OK) {
             $uploaded_file = handleFileUpload($_FILES['imagen_file'], 'image');
@@ -378,7 +391,7 @@ function createPlato($db) {
                 return;
             }
         }
-        
+
         $query = "INSERT INTO platos (nombre, descripcion, historia, imagen, video_preparacion_url, categoria, dificultad, tiempo_preparacion) 
                   VALUES (:nombre, :descripcion, :historia, :imagen, :video_preparacion_url, :categoria, :dificultad, :tiempo_preparacion)";
         $stmt = $db->prepare($query);
@@ -390,13 +403,13 @@ function createPlato($db) {
         $stmt->bindParam(':categoria', $categoria);
         $stmt->bindParam(':dificultad', $dificultad);
         $stmt->bindParam(':tiempo_preparacion', $tiempo_preparacion);
-        
+
         if ($stmt->execute()) {
             echo json_encode(['success' => true, 'message' => 'Plato creado exitosamente', 'id' => $db->lastInsertId()]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error al crear el plato']);
         }
-        
+
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
     }
@@ -460,12 +473,25 @@ function createPalabra($db) {
         $traduccion_espanol = $_POST['traduccion_espanol'] ?? '';
         $categoria = $_POST['categoria'] ?? '';
         $audio_url = $_POST['audio_url'] ?? '';
-        
+
         if (!$palabra_kichwa || !$traduccion_espanol) {
             echo json_encode(['success' => false, 'message' => 'Palabra kichwa y traducción son requeridas']);
             return;
         }
-        
+
+        // Verificar si ya existe una palabra con el mismo nombre
+        $query_check = "SELECT id FROM palabras_kichwa WHERE palabra_kichwa = :palabra_kichwa";
+        $stmt_check = $db->prepare($query_check);
+        $stmt_check->bindParam(':palabra_kichwa', $palabra_kichwa);
+        $stmt_check->execute();
+        $existing_palabra = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+        if ($existing_palabra) {
+            // Si existe, actualizarla en lugar de crear una nueva
+            $_POST['id'] = $existing_palabra['id'];
+            return updatePalabra($db);
+        }
+
         // Manejar upload de audio
         if (isset($_FILES['audio_file']) && $_FILES['audio_file']['error'] === UPLOAD_ERR_OK) {
             $uploaded_file = handleFileUpload($_FILES['audio_file'], 'audio');
@@ -476,7 +502,7 @@ function createPalabra($db) {
                 return;
             }
         }
-        
+
         $query = "INSERT INTO palabras_kichwa (palabra_kichwa, traduccion_espanol, categoria, audio_url) 
                   VALUES (:palabra_kichwa, :traduccion_espanol, :categoria, :audio_url)";
         $stmt = $db->prepare($query);
@@ -484,13 +510,13 @@ function createPalabra($db) {
         $stmt->bindParam(':traduccion_espanol', $traduccion_espanol);
         $stmt->bindParam(':categoria', $categoria);
         $stmt->bindParam(':audio_url', $audio_url);
-        
+
         if ($stmt->execute()) {
             echo json_encode(['success' => true, 'message' => 'Palabra creada exitosamente', 'id' => $db->lastInsertId()]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error al crear la palabra']);
         }
-        
+
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
     }
@@ -557,12 +583,25 @@ function createEvento($db) {
         $ubicacion_texto = $_POST['ubicacion_texto'] ?? '';
         $imagen = $_POST['imagen'] ?? '';
         $id_usuario_creador = $_SESSION['usuario_id'];
-        
+
         if (!$nombre || !$descripcion || !$fecha_inicio) {
             echo json_encode(['success' => false, 'message' => 'Nombre, descripción y fecha de inicio son requeridos']);
             return;
         }
-        
+
+        // Verificar si ya existe un evento con el mismo nombre
+        $query_check = "SELECT id FROM eventos WHERE nombre = :nombre";
+        $stmt_check = $db->prepare($query_check);
+        $stmt_check->bindParam(':nombre', $nombre);
+        $stmt_check->execute();
+        $existing_evento = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+        if ($existing_evento) {
+            // Si existe, actualizarlo en lugar de crear uno nuevo
+            $_POST['id'] = $existing_evento['id'];
+            return updateEvento($db);
+        }
+
         // Manejar upload de imagen
         if (isset($_FILES['imagen_file']) && $_FILES['imagen_file']['error'] === UPLOAD_ERR_OK) {
             $uploaded_file = handleFileUpload($_FILES['imagen_file'], 'image');
@@ -573,7 +612,7 @@ function createEvento($db) {
                 return;
             }
         }
-        
+
         $query = "INSERT INTO eventos (nombre, descripcion, fecha_inicio, fecha_fin, ubicacion_texto, imagen, id_usuario_creador) 
                   VALUES (:nombre, :descripcion, :fecha_inicio, :fecha_fin, :ubicacion_texto, :imagen, :id_usuario_creador)";
         $stmt = $db->prepare($query);
@@ -584,13 +623,13 @@ function createEvento($db) {
         $stmt->bindParam(':ubicacion_texto', $ubicacion_texto);
         $stmt->bindParam(':imagen', $imagen);
         $stmt->bindParam(':id_usuario_creador', $id_usuario_creador);
-        
+
         if ($stmt->execute()) {
             echo json_encode(['success' => true, 'message' => 'Evento creado exitosamente', 'id' => $db->lastInsertId()]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error al crear el evento']);
         }
-        
+
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
     }
@@ -655,12 +694,25 @@ function createRuta($db) {
         $distancia_km = $_POST['distancia_km'] ?? null;
         $dificultad = $_POST['dificultad'] ?? null;
         $mapa_url = $_POST['mapa_url'] ?? '';
-        
+
         if (!$nombre || !$descripcion) {
             echo json_encode(['success' => false, 'message' => 'Nombre y descripción son requeridos']);
             return;
         }
-        
+
+        // Verificar si ya existe una ruta con el mismo nombre
+        $query_check = "SELECT id FROM rutas_turisticas WHERE nombre = :nombre";
+        $stmt_check = $db->prepare($query_check);
+        $stmt_check->bindParam(':nombre', $nombre);
+        $stmt_check->execute();
+        $existing_ruta = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+        if ($existing_ruta) {
+            // Si existe, actualizarla en lugar de crear una nueva
+            $_POST['id'] = $existing_ruta['id'];
+            return updateRuta($db);
+        }
+
         $query = "INSERT INTO rutas_turisticas (nombre, descripcion, distancia_km, dificultad, mapa_url) 
                   VALUES (:nombre, :descripcion, :distancia_km, :dificultad, :mapa_url)";
         $stmt = $db->prepare($query);
@@ -669,13 +721,13 @@ function createRuta($db) {
         $stmt->bindParam(':distancia_km', $distancia_km);
         $stmt->bindParam(':dificultad', $dificultad);
         $stmt->bindParam(':mapa_url', $mapa_url);
-        
+
         if ($stmt->execute()) {
             echo json_encode(['success' => true, 'message' => 'Ruta creada exitosamente']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error al crear la ruta']);
         }
-        
+
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'message' => 'Error del servidor: ' . $e->getMessage()]);
     }
@@ -943,8 +995,8 @@ function updatePlato($db) {
         if (isset($_FILES['imagen_file']) && $_FILES['imagen_file']['error'] === UPLOAD_ERR_OK) {
             $uploaded_file = handleFileUpload($_FILES['imagen_file'], 'image');
             if ($uploaded_file['success']) {
-                // Eliminar imagen anterior si existe
-                if ($current_image && file_exists('../images/' . $current_image)) {
+                // Eliminar imagen anterior si existe y es diferente
+                if ($current_image && $current_image !== $uploaded_file['filename'] && file_exists('../images/' . $current_image)) {
                     unlink('../images/' . $current_image);
                 }
                 $imagen = $uploaded_file['filename'];
@@ -1021,8 +1073,8 @@ function updatePalabra($db) {
         if (isset($_FILES['audio_file']) && $_FILES['audio_file']['error'] === UPLOAD_ERR_OK) {
             $uploaded_file = handleFileUpload($_FILES['audio_file'], 'audio');
             if ($uploaded_file['success']) {
-                // Eliminar audio anterior si existe
-                if ($current_audio && file_exists('../audio/' . $current_audio)) {
+                // Eliminar audio anterior si existe y es diferente
+                if ($current_audio && $current_audio !== $uploaded_file['filename'] && file_exists('../audio/' . $current_audio)) {
                     unlink('../audio/' . $current_audio);
                 }
                 $audio_url = $uploaded_file['filename'];
